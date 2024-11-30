@@ -3,7 +3,7 @@
 import { db } from "@/db/db";
 import { usersTable } from "@/db/schema";
 import bcrypt from "bcrypt";
-import { signIn } from "@/auth";
+import { signIn, signOut } from "@/auth";
 import { z } from "zod";
 import { loginSchema, signupSchema } from "@/schemas/auth";
 import { getUserByEmail } from "@/lib/queries/user";
@@ -92,4 +92,8 @@ export const login = async (data: z.infer<typeof loginSchema>) => {
   }
 
   redirect("/decks");
+};
+
+export const logout = async () => {
+  await signOut({ redirectTo: "/" });
 };
