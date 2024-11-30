@@ -4,62 +4,92 @@ import { db } from "@/db/db";
 import { usersTable } from "@/db/schema";
 import bcrypt from "bcrypt";
 import { signIn } from "@/auth";
+import { z } from "zod";
+import { loginSchema, signupSchema } from "@/schemas/auth";
+import { getUserByEmail } from "@/lib/queries/user";
+import { AuthError } from "next-auth";
 
-interface SignupData {
-  name: string;
-  email: string;
-  password: string;
-}
+export const signup = async (data: z.infer<typeof signupSchema>) => {
+  const validatedData = signupSchema.safeParse(data);
 
-export async function createUser(data: SignupData): Promise<string> {
+  if (!validatedData.success) {
+    const errors = validatedData.error.flatten();
+    console.log(errors);
+    return {
+      success: false,
+      message: "Validation failed",
+    };
+  }
+
   try {
     const { name, email, password } = data;
 
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await getUserByEmail(email);
+    if (user) {
+      return {
+        success: false,
+        message: "This email address has already been registered.",
+      };
+    }
 
-    // Insert user into the database
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     await db.insert(usersTable).values({
       name,
       email,
       password: hashedPassword,
     });
 
-    return "User created successfully";
-  } catch (error: any) {
+    return { success: true, message: "User created successfully" };
+  } catch (error) {
     console.error("Error creating user:", error);
-
-    if (error.code === "23505") {
-      // Handle unique constraint violations
-      throw new Error("Email already exists");
-    }
-
-    throw new Error("Internal server error");
+    throw new Error("Failed to create user");
   }
-}
+};
 
-interface LoginData {
-  email: string;
-  password: string;
-}
+export const login = async (data: z.infer<typeof loginSchema>) => {
+  const validatedFields = loginSchema.safeParse(data);
 
-export const login = async (data: LoginData) => {
-  const { email, password } = data;
+  if (!validatedFields.success) {
+    return { success: false, message: "Invalid fields." };
+  }
+
+  const { email, password } = validatedFields.data;
+
+  const user = await getUserByEmail(email);
+  if (!user) {
+    return {
+      success: false,
+      message: "You have entered an incorrect email or password.",
+    };
+  }
+
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    return {
+      success: false,
+      message: "You have entered an incorrect email or password.",
+    };
+  }
 
   try {
-    const result = await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
-      redirect: false, // Prevent automatic redirection
+      redirectTo: "/",
     });
 
-    if (result?.error) {
-      throw new Error(result.error);
+    return { success: true, message: "Login success!" };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { success: false, error: "Invalid credentials!" };
+        default:
+          return { success: false, error: "Something went wrong!" };
+      }
     }
 
-    return "Login successful!";
-  } catch (error: any) {
-    console.error("Login error:", error);
-    throw new Error("Invalid email or password.");
+    throw error;
   }
 };

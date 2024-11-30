@@ -2,39 +2,35 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { getUserByEmail } from "./lib/queries/user";
 import bcrypt from "bcrypt";
+import { loginSchema } from "./schemas/auth";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: {},
-        password: {},
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          // console.log("credentials: " + JSON.stringify(credentials));
-          const { email, password } = credentials;
+        // console.log("credentials: " + JSON.stringify(credentials));
+        const { success, data } = loginSchema.safeParse(credentials);
 
-          const user = await getUserByEmail(email as string);
+        if (success) {
+          const { email, password } = data;
 
+          const user = await getUserByEmail(email);
           if (!user) {
             return null;
           }
 
-          const isPasswordValid = await bcrypt.compare(
-            password as string,
-            user.password
-          );
+          const isPasswordValid = await bcrypt.compare(password, user.password);
 
           if (isPasswordValid) {
             return user;
           }
-
-          return null;
-        } catch (error) {
-          console.log(error);
-          return null;
         }
+
+        return null;
       },
     }),
   ],
