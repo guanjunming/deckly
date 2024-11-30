@@ -36,10 +36,16 @@ const LoginForm = () => {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     setError("");
 
-    const response = await login(values);
+    try {
+      const data = await login(values);
 
-    if (!response.success) {
-      setError(response.message);
+      if (data?.error) {
+        setError(data?.error);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      }
     }
   }
 
@@ -47,7 +53,7 @@ const LoginForm = () => {
     <div className="w-full h-full sm:max-w-[500px] place-content-center">
       <div className="rounded-xl sm:border bg-card text-card-foreground sm:shadow">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Welcome Back</CardTitle>
+          <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>

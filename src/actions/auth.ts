@@ -8,17 +8,13 @@ import { z } from "zod";
 import { loginSchema, signupSchema } from "@/schemas/auth";
 import { getUserByEmail } from "@/lib/queries/user";
 import { AuthError } from "next-auth";
+import { redirect } from "next/navigation";
 
 export const signup = async (data: z.infer<typeof signupSchema>) => {
-  const validatedData = signupSchema.safeParse(data);
+  const validatedFields = signupSchema.safeParse(data);
 
-  if (!validatedData.success) {
-    const errors = validatedData.error.flatten();
-    console.log(errors);
-    return {
-      success: false,
-      message: "Validation failed",
-    };
+  if (!validatedFields.success) {
+    return { error: "Invalid fields." };
   }
 
   try {
@@ -27,8 +23,7 @@ export const signup = async (data: z.infer<typeof signupSchema>) => {
     const user = await getUserByEmail(email);
     if (user) {
       return {
-        success: false,
-        message: "This email address has already been registered.",
+        error: "This email address has already been registered.",
       };
     }
 
@@ -40,56 +35,61 @@ export const signup = async (data: z.infer<typeof signupSchema>) => {
       password: hashedPassword,
     });
 
-    return { success: true, message: "User created successfully" };
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
   } catch (error) {
-    console.error("Error creating user:", error);
-    throw new Error("Failed to create user");
+    if (error instanceof AuthError) {
+      if (error.type === "CredentialsSignin") {
+        return { error: "Failed to sign in user." };
+      } else {
+        return { error: "Something went wrong!" };
+      }
+    }
+    throw error;
   }
+
+  redirect("/decks");
 };
 
 export const login = async (data: z.infer<typeof loginSchema>) => {
   const validatedFields = loginSchema.safeParse(data);
 
   if (!validatedFields.success) {
-    return { success: false, message: "Invalid fields." };
+    return { error: "Invalid fields." };
   }
 
   const { email, password } = validatedFields.data;
 
   const user = await getUserByEmail(email);
   if (!user) {
-    return {
-      success: false,
-      message: "You have entered an incorrect email or password.",
-    };
+    return { error: "You have entered an incorrect email or password." };
   }
 
   const isValidPassword = await bcrypt.compare(password, user.password);
   if (!isValidPassword) {
-    return {
-      success: false,
-      message: "You have entered an incorrect email or password.",
-    };
+    return { error: "You have entered an incorrect email or password." };
   }
 
   try {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: "/",
+      redirect: false,
     });
-
-    return { success: true, message: "Login success!" };
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { success: false, error: "Invalid credentials!" };
-        default:
-          return { success: false, error: "Something went wrong!" };
+      if (error.type === "CredentialsSignin") {
+        return { error: "You have entered an incorrect email or password." };
+      } else {
+        return { error: "Something went wrong!" };
       }
     }
 
     throw error;
   }
+
+  redirect("/decks");
 };
