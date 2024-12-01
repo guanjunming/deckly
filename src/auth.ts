@@ -48,7 +48,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id;
         token.role = user.role;
       }
-      console.log("token after: " + JSON.stringify(token));
+      // console.log("token after: " + JSON.stringify(token));
       return token;
     },
     async session({ session, token }) {
@@ -59,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id;
         session.user.role = token.role;
       }
-      console.log("session after: " + JSON.stringify(session));
+      // console.log("session after: " + JSON.stringify(session));
       return session;
     },
   },

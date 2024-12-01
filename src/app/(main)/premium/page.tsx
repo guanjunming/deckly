@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
 
-const DecksPage = async () => {
+const PremiumPage = async () => {
   const session = await auth();
   if (!session) return <div>Not authenticated</div>;
 
-  return <div>Decks</div>;
+  return <div>Premium</div>;
 };
 
-export default DecksPage;
+export default PremiumPage;

@@ -1,11 +1,11 @@
-import LogoutButton from "@/components/auth/LogoutButton";
+import Sidebar from "@/components/sidebar/Sidebar";
 
 const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="min-h-screen">
-      <LogoutButton>Logout</LogoutButton>
+    <div className="flex">
+      <Sidebar />
 
-      {children}
+      <div className="w-full">{children}</div>
     </div>
   );
 };
