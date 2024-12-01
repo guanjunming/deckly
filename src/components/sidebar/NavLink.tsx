@@ -9,7 +9,7 @@ const NavLink = ({ menuItem }: { menuItem: MenuItemProps }) => {
   const isActive = pathname === menuItem.path;
 
   return (
-    <Link href={menuItem.path} className="group flex py-1">
+    <Link href={menuItem.path} className="group flex w-full py-1">
       <div className="flex items-center justify-center rounded-full p-3 transition duration-200 group-hover:bg-zinc-200">
         <div>{isActive ? menuItem.iconActive : menuItem.icon}</div>
         <div
