@@ -64,7 +64,7 @@ export const login = async (data: z.infer<typeof loginSchema>) => {
   const { email, password } = validatedFields.data;
 
   const user = await getUserByEmail(email);
-  if (!user) {
+  if (!user || !user.password) {
     return { error: "You have entered an incorrect email or password." };
   }
 
@@ -96,4 +96,8 @@ export const login = async (data: z.infer<typeof loginSchema>) => {
 
 export const logout = async () => {
   await signOut({ redirectTo: "/" });
+};
+
+export const googleLogin = async () => {
+  await signIn("google", { redirectTo: "/decks" });
 };

@@ -26,17 +26,17 @@ const SidebarFooter = ({ session }: DropdownMenuProps) => {
           <button className="flex w-full items-center gap-3 overflow-hidden rounded-full p-3 hover:bg-zinc-200">
             <Avatar className="flex-shrink-0">
               <AvatarImage
-                src={user?.image ? user.image : ""}
-                alt={user?.name ? user.name : ""}
+                src={user?.image || undefined}
+                alt={user?.name || undefined}
               />
               <AvatarFallback className="uppercase">
-                {user?.name ? user.name[0] : "NK"}
+                {user?.name ? user.name[0] : undefined}
               </AvatarFallback>
             </Avatar>
             <div className="hidden flex-1 flex-col overflow-hidden text-left lg:flex">
-              <div className="font-bold">{user ? user.name : "Unknown"}</div>
+              <div className="font-bold">{user?.name || "Unknown"}</div>
               <div className="text-sm text-muted-foreground">
-                {user ? user.email : "Unknown"}
+                {user?.email || "unknown"}
               </div>
             </div>
             <div className="hidden flex-shrink-0 lg:block">

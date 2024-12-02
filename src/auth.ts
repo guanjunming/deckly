@@ -1,11 +1,18 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { getUserByEmail } from "./lib/queries/user";
 import bcrypt from "bcrypt";
 import { loginSchema } from "./schemas/auth";
+import { db } from "./db/db";
+import { usersTable } from "./db/schema";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    }),
     Credentials({
       credentials: {
         email: { label: "Email", type: "email" },
@@ -18,12 +25,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = data;
 
           const user = await getUserByEmail(email);
-          if (!user) {
+          if (!user || !user.password) {
             return null;
           }
 
           const isPasswordValid = await bcrypt.compare(password, user.password);
-
           if (isPasswordValid) {
             return user;
           }
@@ -37,29 +43,47 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/login",
   },
   session: {
-    strategy: "jwt", // Use JWT for session management
+    strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      // console.log("token before: " + JSON.stringify(token));
-      // console.log("user: " + JSON.stringify(user));
-      // Attach user data to the JWT token
-      if (user) {
-        token.id = user.id;
-        token.role = user.role;
+    async signIn({ user, account }) {
+      console.log("signin user: " + JSON.stringify(user));
+      console.log("signin account: " + JSON.stringify(account));
+
+      if (account?.provider === "google") {
+        const { name, email } = user;
+
+        if (!name || !email) return false;
+
+        const existingUser = await getUserByEmail(email);
+        if (!existingUser) {
+          await db.insert(usersTable).values({ name, email });
+        }
       }
-      // console.log("token after: " + JSON.stringify(token));
+
+      return true;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        if (!user.email) return token;
+
+        const existingUser = await getUserByEmail(user.email);
+        if (!existingUser) return token;
+
+        token.id = existingUser.id;
+        token.role = existingUser.role;
+      }
+      console.log("jwt user: " + JSON.stringify(user));
+      console.log("jwt token: " + JSON.stringify(token));
       return token;
     },
     async session({ session, token }) {
-      // Attach the token data to the session object
-      // console.log("session before: " + JSON.stringify(session));
-      // console.log("seession token: " + JSON.stringify(token));
       if (token) {
         session.user.id = token.id;
         session.user.role = token.role;
       }
-      // console.log("session after: " + JSON.stringify(session));
+      console.log("session token: " + JSON.stringify(token));
+      console.log("session after: " + JSON.stringify(session));
       return session;
     },
   },

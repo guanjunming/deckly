@@ -4,7 +4,7 @@ import Link from "next/link";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { login } from "@/actions/auth";
+import { googleLogin, login } from "@/actions/auth";
 import {
   Form,
   FormControl,
@@ -21,6 +21,7 @@ import { loginSchema } from "@/schemas/auth";
 import ErrorLabel from "./ErrorLabel";
 import { useState } from "react";
 import PulseLoader from "react-spinners/PulseLoader";
+import { FcGoogle } from "react-icons/fc";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -50,10 +51,10 @@ const LoginForm = () => {
   }
 
   return (
-    <div className="w-full h-full sm:max-w-[500px] place-content-center">
-      <div className="rounded-xl sm:border bg-card text-card-foreground sm:shadow">
+    <div className="h-full w-full place-content-center sm:max-w-[500px]">
+      <div className="rounded-xl bg-card text-card-foreground sm:border sm:shadow">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">Welcome back</CardTitle>
+          <CardTitle className="text-center text-2xl">Welcome back</CardTitle>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -99,9 +100,10 @@ const LoginForm = () => {
                 <ErrorLabel message={error} />
 
                 <Button
+                  size="lg"
                   disabled={form.formState.isSubmitting}
                   type="submit"
-                  className="w-full mt-5"
+                  className="mt-2 w-full rounded-full"
                 >
                   {form.formState.isSubmitting ? (
                     <PulseLoader
@@ -117,6 +119,27 @@ const LoginForm = () => {
               </div>
             </form>
           </Form>
+
+          <div className="relative mt-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or
+              </span>
+            </div>
+          </div>
+
+          <Button
+            variant="outline"
+            size="lg"
+            className="my-4 w-full rounded-full"
+            onClick={() => googleLogin()}
+          >
+            <FcGoogle /> Log in with Google
+          </Button>
+
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline">

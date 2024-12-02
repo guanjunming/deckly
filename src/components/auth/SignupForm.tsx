@@ -20,7 +20,8 @@ import { signupSchema } from "@/schemas/auth";
 import PulseLoader from "react-spinners/PulseLoader";
 import ErrorLabel from "./ErrorLabel";
 import { useState } from "react";
-import { signup } from "@/actions/auth";
+import { signup, googleLogin } from "@/actions/auth";
+import { FcGoogle } from "react-icons/fc";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -51,10 +52,10 @@ const SignupForm = () => {
   }
 
   return (
-    <div className="w-full h-full sm:max-w-[500px] place-content-center">
-      <div className="rounded-xl sm:border bg-card text-card-foreground sm:shadow">
+    <div className="h-full w-full place-content-center sm:max-w-[500px]">
+      <div className="rounded-xl bg-card text-card-foreground sm:border sm:shadow">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">
+          <CardTitle className="text-center text-2xl">
             Create your account
           </CardTitle>
         </CardHeader>
@@ -116,9 +117,10 @@ const SignupForm = () => {
                 <ErrorLabel message={error} />
 
                 <Button
+                  size="lg"
                   disabled={form.formState.isSubmitting}
                   type="submit"
-                  className="w-full mt-5"
+                  className="mt-2 w-full rounded-full"
                 >
                   {form.formState.isSubmitting ? (
                     <PulseLoader
@@ -134,6 +136,27 @@ const SignupForm = () => {
               </div>
             </form>
           </Form>
+
+          <div className="relative mt-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or
+              </span>
+            </div>
+          </div>
+
+          <Button
+            variant="outline"
+            size="lg"
+            className="my-4 w-full rounded-full"
+            onClick={() => googleLogin()}
+          >
+            <FcGoogle /> Sign up with Google
+          </Button>
+
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
             <Link href="/login" className="underline">
