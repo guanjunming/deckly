@@ -99,5 +99,9 @@ export const logout = async () => {
 };
 
 export const googleLogin = async () => {
-  await signIn("google", { redirectTo: "/decks" });
+  await signIn("google", { redirectTo: "/decks" }, { prompt: "login" });
+};
+
+export const githubLogin = async () => {
+  await signIn("github", { redirectTo: "/decks" });
 };

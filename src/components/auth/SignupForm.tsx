@@ -20,8 +20,8 @@ import { signupSchema } from "@/schemas/auth";
 import PulseLoader from "react-spinners/PulseLoader";
 import ErrorLabel from "./ErrorLabel";
 import { useState } from "react";
-import { signup, googleLogin } from "@/actions/auth";
-import { FcGoogle } from "react-icons/fc";
+import { signup } from "@/actions/auth";
+import OAuthButtons from "./OAuthButtons";
 
 const SignupForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -38,16 +38,10 @@ const SignupForm = () => {
   async function onSubmit(values: z.infer<typeof signupSchema>) {
     setError("");
 
-    try {
-      const data = await signup(values);
+    const data = await signup(values);
 
-      if (data?.error) {
-        setError(data?.error);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      }
+    if (data?.error) {
+      setError(data?.error);
     }
   }
 
@@ -130,7 +124,7 @@ const SignupForm = () => {
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Sign Up"
+                    "Sign up"
                   )}
                 </Button>
               </div>
@@ -148,19 +142,12 @@ const SignupForm = () => {
             </div>
           </div>
 
-          <Button
-            variant="outline"
-            size="lg"
-            className="my-4 w-full rounded-full"
-            onClick={() => googleLogin()}
-          >
-            <FcGoogle /> Sign up with Google
-          </Button>
+          <OAuthButtons mode="signup" />
 
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-8 text-center text-sm">
             Already have an account?{" "}
             <Link href="/login" className="underline">
-              Login
+              Sign in
             </Link>
           </div>
         </CardContent>

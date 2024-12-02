@@ -4,7 +4,7 @@ import Link from "next/link";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { googleLogin, login } from "@/actions/auth";
+import { login } from "@/actions/auth";
 import {
   Form,
   FormControl,
@@ -21,7 +21,7 @@ import { loginSchema } from "@/schemas/auth";
 import ErrorLabel from "./ErrorLabel";
 import { useState } from "react";
 import PulseLoader from "react-spinners/PulseLoader";
-import { FcGoogle } from "react-icons/fc";
+import OAuthButtons from "./OAuthButtons";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -37,16 +37,10 @@ const LoginForm = () => {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     setError("");
 
-    try {
-      const data = await login(values);
+    const data = await login(values);
 
-      if (data?.error) {
-        setError(data?.error);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        setError(error.message);
-      }
+    if (data?.error) {
+      setError(data?.error);
     }
   }
 
@@ -113,7 +107,7 @@ const LoginForm = () => {
                       speedMultiplier={0.7}
                     />
                   ) : (
-                    "Log In"
+                    "Sign in"
                   )}
                 </Button>
               </div>
@@ -131,16 +125,9 @@ const LoginForm = () => {
             </div>
           </div>
 
-          <Button
-            variant="outline"
-            size="lg"
-            className="my-4 w-full rounded-full"
-            onClick={() => googleLogin()}
-          >
-            <FcGoogle /> Log in with Google
-          </Button>
+          <OAuthButtons mode="login" />
 
-          <div className="mt-4 text-center text-sm">
+          <div className="mt-8 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline">
               Sign up
