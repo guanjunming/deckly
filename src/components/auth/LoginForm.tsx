@@ -34,7 +34,7 @@ const LoginForm = () => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof loginSchema>) {
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setError("");
 
     const data = await login(values);
@@ -42,7 +42,7 @@ const LoginForm = () => {
     if (data?.error) {
       setError(data?.error);
     }
-  }
+  };
 
   return (
     <div className="h-full w-full place-content-center sm:max-w-[500px]">

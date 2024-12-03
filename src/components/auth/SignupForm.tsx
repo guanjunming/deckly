@@ -35,7 +35,7 @@ const SignupForm = () => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof signupSchema>) {
+  const onSubmit = async (values: z.infer<typeof signupSchema>) => {
     setError("");
 
     const data = await signup(values);
@@ -43,7 +43,7 @@ const SignupForm = () => {
     if (data?.error) {
       setError(data?.error);
     }
-  }
+  };
 
   return (
     <div className="h-full w-full place-content-center sm:max-w-[500px]">

@@ -6,8 +6,9 @@ import { deckSchema } from "@/schemas/decks";
 import { z } from "zod";
 import { getCurrentUserId } from "../queries/users";
 import { eq, and } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
-export const createDeck = async (values: z.infer<typeof deckSchema>) => {
+export const addDeck = async (values: z.infer<typeof deckSchema>) => {
   const userId = await getCurrentUserId();
   if (!userId) {
     return { ok: false, message: "Unauthorized!" };
@@ -20,6 +21,8 @@ export const createDeck = async (values: z.infer<typeof deckSchema>) => {
   }
 
   await db.insert(decksTable).values({ ...data, userId: userId });
+
+  revalidatePath("/decks");
 
   return { ok: true, message: "Create deck successfully" };
 };
