@@ -20,7 +20,7 @@ import { signupSchema } from "@/schemas/auth";
 import PulseLoader from "react-spinners/PulseLoader";
 import ErrorLabel from "./ErrorLabel";
 import { useState } from "react";
-import { signup } from "@/actions/auth";
+import { signup } from "@/server/actions/auth";
 import OAuthButtons from "./OAuthButtons";
 
 const SignupForm = () => {

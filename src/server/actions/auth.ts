@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import { signIn, signOut } from "@/auth";
 import { z } from "zod";
 import { loginSchema, signupSchema } from "@/schemas/auth";
-import { getUserByEmail } from "@/lib/queries/user";
+import { getUserByEmail } from "@/server/queries/users";
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 

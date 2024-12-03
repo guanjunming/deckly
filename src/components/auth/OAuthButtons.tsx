@@ -3,7 +3,7 @@
 import { Button } from "../ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { githubLogin, googleLogin } from "@/actions/auth";
+import { githubLogin, googleLogin } from "@/server/actions/auth";
 
 interface OAuthButtonsProps {
   mode: "login" | "signup";
