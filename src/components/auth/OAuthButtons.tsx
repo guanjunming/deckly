@@ -5,13 +5,9 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { githubLogin, googleLogin } from "@/server/actions/auth";
 
-interface OAuthButtonsProps {
-  mode: "login" | "signup";
-}
-
-const OAuthButtons = ({ mode }: OAuthButtonsProps) => {
+const OAuthButtons = ({ mode }: { mode: "login" | "signup" }) => {
   return (
-    <div className="my-4 flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       <Button
         variant="outline"
         size="lg"

@@ -22,6 +22,7 @@ import ErrorLabel from "./ErrorLabel";
 import { useState } from "react";
 import PulseLoader from "react-spinners/PulseLoader";
 import OAuthButtons from "./OAuthButtons";
+import AuthButtonSeparator from "./AuthButtonSeparator";
 
 const LoginForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -117,16 +118,11 @@ const LoginForm = () => {
           </form>
         </Form>
 
-        <div className="relative mt-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center uppercase">
-            <span className="bg-background px-2 text-muted-foreground">Or</span>
-          </div>
-        </div>
+        <AuthButtonSeparator />
 
-        <OAuthButtons mode="login" />
+        <div className="my-4">
+          <OAuthButtons mode="login" />
+        </div>
 
         <div className="mt-8 text-center">
           Don&apos;t have an account?{" "}
