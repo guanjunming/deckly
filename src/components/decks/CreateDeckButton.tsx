@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
 
 const CreateDeckButton = () => {
   const [open, setOpen] = useState(false);
@@ -39,8 +40,11 @@ const CreateDeckButton = () => {
     const response = await addDeck(values);
 
     if (response.ok) {
+      toast.success(response.message);
       setOpen(false);
       form.reset();
+    } else {
+      toast.error(response.message);
     }
   };
 

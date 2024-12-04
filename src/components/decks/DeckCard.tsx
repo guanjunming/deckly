@@ -12,12 +12,11 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
 import { Separator } from "@/components/ui/separator";
 import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
-import { DeleteDeckAlertDialogContent } from "./DeleteDeckAlertDialogContent";
+import DeleteDeckAlertDialogContent from "./DeleteDeckAlertDialogContent";
 
 interface DeckCardProps {
   id: number;
@@ -26,7 +25,7 @@ interface DeckCardProps {
 
 const DeckCard = ({ id, name }: DeckCardProps) => {
   return (
-    <div className="">
+    <div>
       <div className="flex cursor-pointer items-center gap-5 rounded-md py-1 hover:bg-accent">
         <div className="ml-2 flex-1 truncate hover:underline">{name}</div>
         <div className="mr-2 flex items-center gap-2">
@@ -45,8 +44,8 @@ const DeckCard = ({ id, name }: DeckCardProps) => {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  align="start"
-                  alignOffset={0}
+                  align="end"
+                  sideOffset={-5}
                   className="rounded-xl"
                 >
                   <DialogTrigger asChild>

@@ -11,20 +11,20 @@ import { revalidatePath } from "next/cache";
 export const addDeck = async (values: z.infer<typeof deckSchema>) => {
   const userId = await getCurrentUserId();
   if (!userId) {
-    return { ok: false, message: "Unauthorized!" };
+    return { ok: false, message: "Unauthorized! Please sign in again." };
   }
 
   const { success, data } = deckSchema.safeParse(values);
 
   if (!success) {
-    return { ok: false, message: "Invalid fields" };
+    return { ok: false, message: "Invalid fields." };
   }
 
   await db.insert(decksTable).values({ ...data, userId: userId });
 
   revalidatePath("/decks");
 
-  return { ok: true, message: "Create deck successfully" };
+  return { ok: true, message: "Deck has been created." };
 };
 
 export const updateDeck = async (
@@ -33,13 +33,13 @@ export const updateDeck = async (
 ) => {
   const userId = await getCurrentUserId();
   if (!userId) {
-    return { ok: false, message: "Unauthorized!" };
+    return { ok: false, message: "Unauthorized! Please sign in again." };
   }
 
   const { success, data } = deckSchema.safeParse(values);
 
   if (!success) {
-    return { ok: false, message: "Invalid fields" };
+    return { ok: false, message: "Invalid fields." };
   }
 
   const { rowCount } = await db
@@ -48,16 +48,16 @@ export const updateDeck = async (
     .where(and(eq(decksTable.id, deckId), eq(decksTable.userId, userId)));
 
   if (rowCount === 0) {
-    return { ok: false, message: "Deck does not exist" };
+    return { ok: false, message: "Deck does not exist." };
   }
 
-  return { ok: true, message: "Update deck successfully" };
+  return { ok: true, message: "Update deck successfully." };
 };
 
 export const deleteDeck = async (deckId: number) => {
   const userId = await getCurrentUserId();
   if (!userId) {
-    return { ok: false, message: "Unauthorized!" };
+    return { ok: false, message: "Unauthorized! Please sign in again." };
   }
 
   const { rowCount } = await db
@@ -65,10 +65,10 @@ export const deleteDeck = async (deckId: number) => {
     .where(and(eq(decksTable.id, deckId), eq(decksTable.userId, userId)));
 
   if (rowCount === 0) {
-    return { ok: false, message: "Deck does not exist" };
+    return { ok: false, message: "Deck does not exist." };
   }
 
   revalidatePath("/decks");
 
-  return { ok: true, message: "Deck deleted successfully" };
+  return { ok: true, message: "Deck has been deleted." };
 };
