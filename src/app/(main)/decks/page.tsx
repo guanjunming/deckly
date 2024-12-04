@@ -14,21 +14,25 @@ const DecksPage = async () => {
   const decks = await getAllDecks(userId);
 
   return (
-    <div className="mx-auto flex h-screen max-w-screen-lg flex-col px-5">
+    <div className="mx-auto flex h-screen max-w-screen-lg flex-col px-3">
       <div className="flex flex-col">
-        <div className="mt-5 flex items-center justify-between">
-          <h1 className="text-3xl font-semibold">Your Decks</h1>
+        <div className="mt-6 flex items-center justify-between">
+          <h1 className="text-3xl font-semibold">Your decks</h1>
           <CreateDeckButton />
         </div>
 
         {decks.length > 0 ? (
           <Card className="mt-5 p-5">
-            <div className="flex gap-10 border-b pb-2 font-semibold">
+            <div className="flex gap-5 border-b pb-2 font-semibold">
               <div className="ml-2 flex-1">Deck</div>
-              <div className="mr-10 flex gap-4 text-center">
-                <div className="w-14">New</div>
-                <div className="w-14">Learn</div>
-                <div className="w-14">Due</div>
+
+              <div className="mr-2 flex items-center gap-2">
+                <div className="flex items-center gap-4 text-center">
+                  <div className="w-14">New</div>
+                  <div className="w-14">Learn</div>
+                  <div className="w-14">Due</div>
+                </div>
+                <div className="h-full w-8"></div>
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-1">

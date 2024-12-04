@@ -54,7 +54,7 @@ const CreateDeckButton = () => {
     >
       <DialogTrigger asChild>
         <Button size="lg" className="rounded-full">
-          Create Deck
+          New Deck
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>

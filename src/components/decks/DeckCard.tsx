@@ -1,4 +1,4 @@
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,36 +27,36 @@ interface DeckCardProps {
 const DeckCard = ({ id, name }: DeckCardProps) => {
   return (
     <div className="">
-      <div className="flex cursor-pointer gap-10 rounded-md py-2 hover:bg-accent">
-        <div className="ml-2 flex-1 hover:underline">{name}</div>
-        <div className="mr-3 flex gap-2">
-          <div className="flex gap-4 text-center">
+      <div className="flex cursor-pointer items-center gap-5 rounded-md py-1 hover:bg-accent">
+        <div className="ml-2 flex-1 truncate hover:underline">{name}</div>
+        <div className="mr-2 flex items-center gap-2">
+          <div className="flex items-center gap-4 text-center">
             <div className="w-14">20</div>
             <div className="w-14">0</div>
-            <div className="w-14">691</div>
+            <div className="w-14">0</div>
           </div>
 
           <Dialog>
             <AlertDialog>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button>
-                    <Ellipsis className="h-5 w-5" />
-                  </button>
+                  <div className="rounded-full p-2 hover:bg-zinc-200">
+                    <Ellipsis className="h-4 w-4" />
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="start"
                   alignOffset={0}
-                  className="rounded-xl p-1.5"
+                  className="rounded-xl"
                 >
                   <DialogTrigger asChild>
                     <DropdownMenuItem className="cursor-pointer">
-                      Rename
+                      <SquarePen /> Rename
                     </DropdownMenuItem>
                   </DialogTrigger>
                   <AlertDialogTrigger asChild>
                     <DropdownMenuItem className="cursor-pointer">
-                      Delete
+                      <Trash2 /> Delete
                     </DropdownMenuItem>
                   </AlertDialogTrigger>
                 </DropdownMenuContent>
