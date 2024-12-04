@@ -68,5 +68,7 @@ export const deleteDeck = async (deckId: number) => {
     return { ok: false, message: "Deck does not exist" };
   }
 
-  return { ok: true, message: "Delete deck successfully" };
+  revalidatePath("/decks");
+
+  return { ok: true, message: "Deck deleted successfully" };
 };

@@ -4,7 +4,7 @@ import { getCurrentUserId } from "@/server/queries/users";
 import { redirect } from "next/navigation";
 import CreateDeckButton from "@/components/decks/CreateDeckButton";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+
 import DeckCard from "@/components/decks/DeckCard";
 
 const DecksPage = async () => {
@@ -33,12 +33,7 @@ const DecksPage = async () => {
             </div>
             <div className="mt-5 flex flex-col gap-1">
               {decks.map((deck) => {
-                return (
-                  <>
-                    <DeckCard key={deck.id} id={deck.id} name={deck.name} />
-                    <Separator />
-                  </>
-                );
+                return <DeckCard key={deck.id} id={deck.id} name={deck.name} />;
               })}
             </div>
           </Card>

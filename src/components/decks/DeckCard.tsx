@@ -2,13 +2,10 @@ import { Ellipsis } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Link from "next/link";
+
 import {
   Dialog,
   DialogTrigger,
@@ -18,9 +15,18 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
-const DeckCard = ({ id, name }: { id: number; name: string }) => {
+import { Separator } from "@/components/ui/separator";
+import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
+import { DeleteDeckAlertDialogContent } from "./DeleteDeckAlertDialogContent";
+
+interface DeckCardProps {
+  id: number;
+  name: string;
+}
+
+const DeckCard = ({ id, name }: DeckCardProps) => {
   return (
-    <div>
+    <div className="">
       <div className="flex cursor-pointer gap-10 rounded-md py-2 hover:bg-accent">
         <div className="ml-2 flex-1 hover:underline">{name}</div>
         <div className="mr-3 flex gap-2">
@@ -31,25 +37,33 @@ const DeckCard = ({ id, name }: { id: number; name: string }) => {
           </div>
 
           <Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button>
-                  <Ellipsis className="h-5 w-5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                alignOffset={0}
-                className="rounded-xl"
-              >
-                <DialogTrigger asChild>
-                  <DropdownMenuItem>Rename</DropdownMenuItem>
-                </DialogTrigger>
-                {/* <AlertDialogTrigger asChild> */}
-                <DropdownMenuItem>Delete</DropdownMenuItem>
-                {/* </AlertDialogTrigger> */}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <AlertDialog>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button>
+                    <Ellipsis className="h-5 w-5" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="start"
+                  alignOffset={0}
+                  className="rounded-xl p-1.5"
+                >
+                  <DialogTrigger asChild>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Rename
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                  <AlertDialogTrigger asChild>
+                    <DropdownMenuItem className="cursor-pointer">
+                      Delete
+                    </DropdownMenuItem>
+                  </AlertDialogTrigger>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <DeleteDeckAlertDialogContent id={id} />
+            </AlertDialog>
+
             <DialogContent className="max-w-max">
               <DialogHeader>
                 <DialogTitle className="text-2xl">
@@ -64,6 +78,7 @@ const DeckCard = ({ id, name }: { id: number; name: string }) => {
           </Dialog>
         </div>
       </div>
+      <Separator className="mt-1" />
     </div>
   );
 };
