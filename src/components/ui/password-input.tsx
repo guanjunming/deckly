@@ -25,14 +25,14 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
           type="button"
           variant="ghost"
           size="sm"
-          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent [&_svg]:size-5"
           onClick={() => setShowPassword((prev) => !prev)}
           disabled={disabled}
         >
           {showPassword && !disabled ? (
-            <EyeIcon className="h-4 w-4" aria-hidden="true" />
-          ) : (
             <EyeOffIcon className="h-4 w-4" aria-hidden="true" />
+          ) : (
+            <EyeIcon className="h-4 w-4" aria-hidden="true" />
           )}
           <span className="sr-only">
             {showPassword ? "Hide password" : "Show password"}
@@ -50,7 +50,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, InputProps>(
 				`}</style>
       </div>
     );
-  }
+  },
 );
 PasswordInput.displayName = "PasswordInput";
 

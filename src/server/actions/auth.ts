@@ -23,7 +23,7 @@ export const signup = async (data: z.infer<typeof signupSchema>) => {
     const user = await getUserByEmail(email);
     if (user) {
       return {
-        error: "This email address has already been registered.",
+        error: "This email has already been registered.",
       };
     }
 

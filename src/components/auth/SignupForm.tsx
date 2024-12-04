@@ -46,112 +46,117 @@ const SignupForm = () => {
   };
 
   return (
-    <div className="h-full w-full place-content-center sm:max-w-[500px]">
-      <div className="rounded-xl bg-card text-card-foreground sm:border sm:shadow">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">
-            Create your account
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="flex flex-col gap-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="name">Name</FormLabel>
-                      <FormControl>
-                        <Input id="name" placeholder="Name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="email">Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          id="email"
-                          placeholder="Email"
-                          type="email"
-                          autoComplete="email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel htmlFor="password">Password</FormLabel>
-                      <FormControl>
-                        <PasswordInput
-                          id="password"
-                          placeholder="Password"
-                          autoComplete="new-password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+    <div className="mx-auto w-full sm:max-w-[450px]">
+      <CardHeader>
+        <CardTitle className="text-4xl">Create your account</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="flex flex-col gap-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="name" className="text-base">
+                      Name
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="name"
+                        placeholder="Name"
+                        maxLength={50}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="email" className="text-base">
+                      Email
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        id="email"
+                        placeholder="Email"
+                        type="email"
+                        autoComplete="email"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="password" className="text-base">
+                      Password
+                    </FormLabel>
+                    <FormControl>
+                      <PasswordInput
+                        id="password"
+                        placeholder="Password"
+                        autoComplete="new-password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                <ErrorLabel message={error} />
+              <ErrorLabel message={error} />
 
-                <Button
-                  size="lg"
-                  disabled={form.formState.isSubmitting}
-                  type="submit"
-                  className="mt-2 w-full rounded-full"
-                >
-                  {form.formState.isSubmitting ? (
-                    <PulseLoader
-                      loading={true}
-                      color="#fff"
-                      size={8}
-                      speedMultiplier={0.7}
-                    />
-                  ) : (
-                    "Sign up"
-                  )}
-                </Button>
-              </div>
-            </form>
-          </Form>
-
-          <div className="relative mt-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <Button
+                size="lg"
+                disabled={form.formState.isSubmitting}
+                type="submit"
+                className="mt-2 w-full rounded-full"
+              >
+                {form.formState.isSubmitting ? (
+                  <PulseLoader
+                    loading={true}
+                    color="#fff"
+                    size={8}
+                    speedMultiplier={0.7}
+                  />
+                ) : (
+                  "Sign up"
+                )}
+              </Button>
             </div>
-            <div className="relative flex justify-center uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or
-              </span>
-            </div>
-          </div>
+          </form>
+        </Form>
 
-          <OAuthButtons mode="signup" />
-
-          <div className="mt-8 text-center text-sm">
-            Already have an account?{" "}
-            <Link href="/login" className="underline">
-              Sign in
-            </Link>
+        <div className="relative mt-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
           </div>
-        </CardContent>
-      </div>
+          <div className="relative flex justify-center uppercase">
+            <span className="bg-background px-2 text-muted-foreground">Or</span>
+          </div>
+        </div>
+
+        <OAuthButtons mode="signup" />
+
+        <div className="mt-8 text-center">
+          Already have an account?{" "}
+          <Link href="/login" className="text-blue-500 underline">
+            Sign in
+          </Link>
+        </div>
+      </CardContent>
     </div>
   );
 };
