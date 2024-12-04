@@ -14,9 +14,9 @@ const DecksPage = async () => {
   const decks = await getAllDecks(userId);
 
   return (
-    <div className="mx-auto flex h-screen max-w-screen-lg flex-col px-3">
+    <div className="mx-auto flex max-w-screen-lg flex-col px-3 py-6">
       <div className="flex flex-col">
-        <div className="mt-6 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Your decks</h1>
           <CreateDeckButton />
         </div>
@@ -37,7 +37,16 @@ const DecksPage = async () => {
             </div>
             <div className="mt-5 flex flex-col gap-1">
               {decks.map((deck) => {
-                return <DeckCard key={deck.id} id={deck.id} name={deck.name} />;
+                return (
+                  <DeckCard
+                    key={deck.id}
+                    id={deck.id}
+                    name={deck.name}
+                    newCount={20}
+                    learnCount={0}
+                    dueCount={0}
+                  />
+                );
               })}
             </div>
           </Card>

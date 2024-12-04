@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MenuItemProps } from "./menuItems";
+import { MenuItemProps } from "./menu-items";
 
 const NavLink = ({ menuItem }: { menuItem: MenuItemProps }) => {
   const pathname = usePathname();

@@ -1,80 +1,55 @@
-import { Ellipsis, SquarePen, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+"use client";
 
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "../ui/button";
 import { Separator } from "@/components/ui/separator";
-import { AlertDialog, AlertDialogTrigger } from "../ui/alert-dialog";
-import DeleteDeckAlertDialogContent from "./DeleteDeckAlertDialogContent";
+import DeckActionButton from "./DeckActionButton";
 
 interface DeckCardProps {
   id: number;
   name: string;
+  newCount: number;
+  learnCount: number;
+  dueCount: number;
 }
 
-const DeckCard = ({ id, name }: DeckCardProps) => {
+const DeckCard = ({
+  id,
+  name,
+  newCount,
+  learnCount,
+  dueCount,
+}: DeckCardProps) => {
+  const handleOnClick = () => {
+    console.log("start learn deck: " + id);
+  };
+
   return (
     <div>
-      <div className="flex cursor-pointer items-center gap-5 rounded-md py-1 hover:bg-accent">
-        <div className="ml-2 flex-1 truncate hover:underline">{name}</div>
+      <div className="flex items-center gap-5 rounded-md py-1 hover:bg-accent">
+        <div
+          className="ml-2 flex-1 cursor-pointer truncate hover:underline"
+          onClick={handleOnClick}
+        >
+          {name}
+        </div>
         <div className="mr-2 flex items-center gap-2">
           <div className="flex items-center gap-4 text-center">
-            <div className="w-14">20</div>
-            <div className="w-14">0</div>
-            <div className="w-14">0</div>
+            <div
+              className={`w-14 ${newCount > 0 ? "text-blue-500" : "text-zinc-300"}`}
+            >
+              {newCount}
+            </div>
+            <div
+              className={`w-14 ${learnCount > 0 ? "text-red-500" : "text-zinc-300"}`}
+            >
+              {learnCount}
+            </div>
+            <div
+              className={`w-14 ${dueCount > 0 ? "text-green-500" : "text-zinc-300"}`}
+            >
+              {dueCount}
+            </div>
           </div>
-
-          <Dialog>
-            <AlertDialog>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="rounded-full p-2 hover:bg-zinc-200">
-                    <Ellipsis className="h-4 w-4" />
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  sideOffset={-5}
-                  className="rounded-xl"
-                >
-                  <DialogTrigger asChild>
-                    <DropdownMenuItem className="cursor-pointer">
-                      <SquarePen /> Rename
-                    </DropdownMenuItem>
-                  </DialogTrigger>
-                  <AlertDialogTrigger asChild>
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Trash2 /> Delete
-                    </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <DeleteDeckAlertDialogContent id={id} />
-            </AlertDialog>
-
-            <DialogContent className="max-w-max">
-              <DialogHeader>
-                <DialogTitle className="text-2xl">
-                  Start Earning PPP Sales!
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="flex gap-2">
-                <Button>Button</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <DeckActionButton id={id} name={name} />
         </div>
       </div>
       <Separator className="mt-1" />

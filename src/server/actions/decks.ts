@@ -27,7 +27,7 @@ export const addDeck = async (values: z.infer<typeof deckSchema>) => {
   return { ok: true, message: "Deck has been created." };
 };
 
-export const updateDeck = async (
+export const renameDeck = async (
   deckId: number,
   values: z.infer<typeof deckSchema>,
 ) => {
@@ -51,7 +51,9 @@ export const updateDeck = async (
     return { ok: false, message: "Deck does not exist." };
   }
 
-  return { ok: true, message: "Update deck successfully." };
+  revalidatePath("/decks");
+
+  return { ok: true, message: "Deck has been renamed." };
 };
 
 export const deleteDeck = async (deckId: number) => {

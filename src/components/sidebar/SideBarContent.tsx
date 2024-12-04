@@ -2,7 +2,7 @@
 
 import NavLink from "./NavLink";
 import { IconContext } from "react-icons";
-import { menuItems } from "./menuItems";
+import { menuItems } from "./menu-items";
 
 const SideBarContent = () => {
   return (

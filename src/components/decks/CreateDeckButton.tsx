@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -87,10 +88,19 @@ const CreateDeckButton = () => {
                 )}
               />
               <DialogFooter>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-full"
+                  >
+                    Close
+                  </Button>
+                </DialogClose>
                 <Button
                   disabled={form.formState.isSubmitting}
                   type="submit"
-                  className="min-w-28 rounded-full"
+                  className="w-20 rounded-full"
                 >
                   {form.formState.isSubmitting ? (
                     <Spinner size="small" className="text-primary-foreground" />
