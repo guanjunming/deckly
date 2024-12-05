@@ -24,11 +24,11 @@ export type DeckNameOption = {
 
 const SelectDeckCombobox = ({
   decks,
-  currentDeckId,
+  deckId,
   onSelect,
 }: {
   decks: DeckNameOption[];
-  currentDeckId: number;
+  deckId: number | undefined;
   onSelect: (id: number) => void;
 }) => {
   const [open, setOpen] = useState(false);
@@ -42,8 +42,8 @@ const SelectDeckCombobox = ({
           aria-expanded={open}
           className="w-full justify-between font-normal"
         >
-          {currentDeckId
-            ? decks.find((deck) => deck.id === currentDeckId)?.name
+          {deckId
+            ? decks.find((deck) => deck.id === deckId)?.name
             : "Select deck..."}
           <ChevronDown />
         </Button>

@@ -21,7 +21,7 @@ export const addCard = async (values: z.infer<typeof cardAddSchema>) => {
   }
 
   const deck = await getDeckById(data.deckId);
-  if (deck) {
+  if (!deck) {
     return { ok: false, message: "Deck does not exist." };
   }
 

@@ -7,26 +7,32 @@ import {
 } from "@/components/ui/resizable";
 import SelectDeckCombobox, { DeckNameOption } from "./SelectDeckCombobox";
 import { useState } from "react";
+import CardEditor from "./CardEditor";
 
 const DeckBrowser = ({ decks }: { decks: DeckNameOption[] }) => {
-  const [selectedDeckId, setSelectedDeckId] = useState(decks[0]?.id);
+  const [selectedDeckId, setSelectedDeckId] = useState<number | undefined>(
+    decks[0]?.id,
+  );
 
   const handleSelectDeck = (deckId: number) => {
     if (selectedDeckId != deckId) {
       setSelectedDeckId(deckId);
-      console.log("selected: " + deckId);
     }
   };
 
   return (
-    <ResizablePanelGroup direction="horizontal" className="h-full w-full">
+    <ResizablePanelGroup
+      direction="horizontal"
+      autoSaveId="browser-layout"
+      className="h-full w-full"
+    >
       <ResizablePanel defaultSize={50}>
-        <div className="h-full p-4">
+        <div className="h-full p-3">
           <div className="flex items-center gap-3">
             <span>Deck</span>
             <SelectDeckCombobox
               decks={decks}
-              currentDeckId={selectedDeckId}
+              deckId={selectedDeckId}
               onSelect={handleSelectDeck}
             />
           </div>
@@ -36,8 +42,8 @@ const DeckBrowser = ({ decks }: { decks: DeckNameOption[] }) => {
       <ResizableHandle withHandle />
 
       <ResizablePanel defaultSize={50}>
-        <div className="flex h-full flex-col">
-          <span className="font-semibold">Content</span>
+        <div className="h-full p-3">
+          <CardEditor deckId={selectedDeckId} />
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
