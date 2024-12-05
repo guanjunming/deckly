@@ -5,8 +5,8 @@ export const cardSchemaBase = z.object({
   back: z.string().optional(),
 });
 
-export const cardActionSchema = z
+export const cardAddSchema = z
   .object({
-    deckId: z.number().positive(),
+    deckId: z.number().positive("Invalid deck."),
   })
   .merge(cardSchemaBase);

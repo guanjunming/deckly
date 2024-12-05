@@ -11,3 +11,11 @@ export const getAllDecks = async (userId: string) => {
 
   return decks;
 };
+
+export const getDeckById = async (deckId: number) => {
+  const deck = await db.query.deckTable.findFirst({
+    where: eq(deckTable.id, deckId),
+  });
+
+  return deck;
+};
