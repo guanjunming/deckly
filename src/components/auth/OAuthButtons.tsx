@@ -11,7 +11,7 @@ const OAuthButtons = ({ mode }: { mode: "login" | "signup" }) => {
       <Button
         variant="outline"
         size="lg"
-        className="w-full rounded-full"
+        className="w-full rounded-full [&_svg]:size-6"
         onClick={() => googleLogin()}
       >
         <FcGoogle /> {`${mode === "login" ? "Sign in" : "Sign up"} with Google`}
@@ -20,7 +20,7 @@ const OAuthButtons = ({ mode }: { mode: "login" | "signup" }) => {
       <Button
         variant="outline"
         size="lg"
-        className="w-full rounded-full"
+        className="w-full rounded-full [&_svg]:size-6"
         onClick={() => githubLogin()}
       >
         <FaGithub /> {`${mode === "login" ? "Sign in" : "Sign up"} with GitHub`}

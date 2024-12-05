@@ -19,3 +19,16 @@ export const getDeckById = async (deckId: number) => {
 
   return deck;
 };
+
+export const getAllDeckNames = async (userId: string) => {
+  const result = await db
+    .select({
+      id: deckTable.id,
+      name: deckTable.name,
+    })
+    .from(deckTable)
+    .where(eq(deckTable.userId, userId))
+    .orderBy(asc(deckTable.id));
+
+  return result;
+};

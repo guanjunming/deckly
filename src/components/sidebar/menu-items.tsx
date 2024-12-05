@@ -26,7 +26,7 @@ export const menuItems: MenuItemProps[] = [
     label: "Add Cards",
     icon: <TbCards />,
     iconActive: <TbCardsFilled />,
-    path: "/cards",
+    path: "/add-cards",
   },
   {
     label: "Browser",
