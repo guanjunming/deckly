@@ -6,7 +6,7 @@ import { getUserByEmail } from "./server/queries/users";
 import bcrypt from "bcrypt";
 import { loginSchema } from "./schemas/auth";
 import { db } from "./db/db";
-import { usersTable } from "./db/schema";
+import { userTable } from "./db/schema";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -52,9 +52,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account }) {
-      // console.log("signin user: " + JSON.stringify(user));
-      // console.log("signin account: " + JSON.stringify(account));
-
       if (account?.provider !== "credentials") {
         const { name, email } = user;
 
@@ -62,7 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const existingUser = await getUserByEmail(email);
         if (!existingUser) {
-          await db.insert(usersTable).values({ name, email });
+          await db.insert(userTable).values({ name, email });
         }
       }
 
@@ -78,8 +75,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = existingUser.id;
         token.role = existingUser.role;
       }
-      // console.log("jwt user: " + JSON.stringify(user));
-      // console.log("jwt token: " + JSON.stringify(token));
       return token;
     },
     async session({ session, token }) {
@@ -87,8 +82,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.id;
         session.user.role = token.role;
       }
-      // console.log("session token: " + JSON.stringify(token));
-      // console.log("session after: " + JSON.stringify(session));
       return session;
     },
   },

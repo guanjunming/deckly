@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { decksTable } from "@/db/schema";
+import { deckTable } from "@/db/schema";
 import { deckSchema } from "@/schemas/decks";
 import { z } from "zod";
 import { getCurrentUserId } from "../queries/users";
@@ -20,7 +20,7 @@ export const addDeck = async (values: z.infer<typeof deckSchema>) => {
     return { ok: false, message: "Invalid fields." };
   }
 
-  await db.insert(decksTable).values({ ...data, userId: userId });
+  await db.insert(deckTable).values({ ...data, userId: userId });
 
   revalidatePath("/decks");
 
@@ -43,9 +43,9 @@ export const renameDeck = async (
   }
 
   const { rowCount } = await db
-    .update(decksTable)
+    .update(deckTable)
     .set({ ...data })
-    .where(and(eq(decksTable.id, deckId), eq(decksTable.userId, userId)));
+    .where(and(eq(deckTable.id, deckId), eq(deckTable.userId, userId)));
 
   if (rowCount === 0) {
     return { ok: false, message: "Deck does not exist." };
@@ -63,8 +63,8 @@ export const deleteDeck = async (deckId: number) => {
   }
 
   const { rowCount } = await db
-    .delete(decksTable)
-    .where(and(eq(decksTable.id, deckId), eq(decksTable.userId, userId)));
+    .delete(deckTable)
+    .where(and(eq(deckTable.id, deckId), eq(deckTable.userId, userId)));
 
   if (rowCount === 0) {
     return { ok: false, message: "Deck does not exist." };

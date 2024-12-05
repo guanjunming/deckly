@@ -1,13 +1,13 @@
 import { db } from "@/db/db";
-import { cardsTable } from "@/db/schema";
+import { cardTable } from "@/db/schema";
 import { asc, eq } from "drizzle-orm";
 
 export const getAllCardsByDeckId = async (deckId: number) => {
   const cards = await db
     .select()
-    .from(cardsTable)
-    .where(eq(cardsTable.deckId, deckId))
-    .orderBy(asc(cardsTable.id));
+    .from(cardTable)
+    .where(eq(cardTable.deckId, deckId))
+    .orderBy(asc(cardTable.id));
 
   return cards;
 };

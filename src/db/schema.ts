@@ -18,7 +18,7 @@ const updatedAt = timestamp("updated_at")
 
 export const rolesEnum = pgEnum("roles", ["BASIC", "PREMIUM"]);
 
-export const usersTable = pgTable("users", {
+export const userTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
   email: varchar("email").notNull().unique(),
@@ -27,38 +27,38 @@ export const usersTable = pgTable("users", {
   role: rolesEnum("role").notNull().default("BASIC"),
 });
 
-export const userRelations = relations(usersTable, ({ many }) => ({
-  decks: many(decksTable),
-  cards: many(cardsTable),
+export const userRelations = relations(userTable, ({ many }) => ({
+  decks: many(deckTable),
+  cards: many(cardTable),
 }));
 
-export const decksTable = pgTable("decks", {
+export const deckTable = pgTable("decks", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
   name: text("name").notNull(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => usersTable.id),
+    .references(() => userTable.id),
   createdAt,
 });
 
-export const deckRelations = relations(decksTable, ({ one, many }) => ({
-  user: one(usersTable, {
-    fields: [decksTable.userId],
-    references: [usersTable.id],
+export const deckRelations = relations(deckTable, ({ one, many }) => ({
+  user: one(userTable, {
+    fields: [deckTable.userId],
+    references: [userTable.id],
   }),
-  cards: many(cardsTable),
+  cards: many(cardTable),
 }));
 
 export const cardStateEnum = pgEnum("card_state", ["NEW", "LEARN", "REVIEW"]);
 
-export const cardsTable = pgTable("cards", {
+export const cardTable = pgTable("cards", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
   deckId: bigint("deck_id", { mode: "number" })
     .notNull()
-    .references(() => decksTable.id),
+    .references(() => deckTable.id),
   userId: uuid("user_id")
     .notNull()
-    .references(() => usersTable.id),
+    .references(() => userTable.id),
   state: cardStateEnum("state").notNull().default("NEW"),
   front: text("front").notNull(),
   back: text("back"),
@@ -66,13 +66,13 @@ export const cardsTable = pgTable("cards", {
   updatedAt,
 });
 
-export const cardRelations = relations(cardsTable, ({ one }) => ({
-  deck: one(decksTable, {
-    fields: [cardsTable.deckId],
-    references: [decksTable.id],
+export const cardRelations = relations(cardTable, ({ one }) => ({
+  deck: one(deckTable, {
+    fields: [cardTable.deckId],
+    references: [deckTable.id],
   }),
-  user: one(usersTable, {
-    fields: [cardsTable.userId],
-    references: [usersTable.id],
+  user: one(userTable, {
+    fields: [cardTable.userId],
+    references: [userTable.id],
   }),
 }));

@@ -1,5 +1,5 @@
 import { db } from "@/db/db";
-import { usersTable } from "@/db/schema";
+import { userTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
 
@@ -12,7 +12,7 @@ export const getCurrentUserId = async () => {
 export const getUserByEmail = async (email: string) => {
   try {
     const user = await db.query.usersTable.findFirst({
-      where: eq(usersTable.email, email),
+      where: eq(userTable.email, email),
     });
 
     return user;

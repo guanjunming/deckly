@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { usersTable } from "@/db/schema";
+import { userTable } from "@/db/schema";
 import bcrypt from "bcrypt";
 import { signIn, signOut } from "@/auth";
 import { z } from "zod";
@@ -29,7 +29,7 @@ export const signup = async (data: z.infer<typeof signupSchema>) => {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    await db.insert(usersTable).values({
+    await db.insert(userTable).values({
       name,
       email,
       password: hashedPassword,
