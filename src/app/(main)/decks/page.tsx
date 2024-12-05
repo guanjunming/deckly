@@ -4,7 +4,6 @@ import { getCurrentUserId } from "@/server/queries/users";
 import { redirect } from "next/navigation";
 import CreateDeckButton from "@/components/decks/CreateDeckButton";
 import { Button } from "@/components/ui/button";
-
 import DeckCard from "@/components/decks/DeckCard";
 
 const DecksPage = async () => {
