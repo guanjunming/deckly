@@ -7,10 +7,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { addCard } from "@/server/actions/cards";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
   const [frontField, setFrontField] = useState("");
   const [backField, setBackField] = useState<string | undefined>("");
+  const queryClient = useQueryClient();
 
   const handleAddClicked = async () => {
     if (!deckId) return;
@@ -24,9 +26,10 @@ const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
     const response = await addCard(data);
     if (response.ok) {
       toast.success(response.message);
-
       setFrontField("");
       setBackField("");
+
+      queryClient.invalidateQueries({ queryKey: ["cards", deckId] });
     } else {
       toast.error(response.message);
     }
@@ -44,7 +47,7 @@ const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
               id="front"
               value={frontField}
               onChange={(e) => setFrontField(e.target.value)}
-              className="resize-none text-base"
+              className="resize-none text-xl"
             />
           </div>
           <div className="space-y-1">
@@ -55,7 +58,7 @@ const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
               id="back"
               value={backField}
               onChange={(e) => setBackField(e.target.value)}
-              className="resize-none text-base"
+              className="resize-none text-xl"
             />
           </div>
         </div>

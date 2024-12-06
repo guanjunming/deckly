@@ -6,4 +6,5 @@ export type Card = {
   back: string;
   createdAt: Date;
   updatedAt: Date;
+  deck: string;
 };

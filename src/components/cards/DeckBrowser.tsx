@@ -8,30 +8,39 @@ import {
 import SelectDeckCombobox, { type DeckNameOption } from "./SelectDeckCombobox";
 import { useState } from "react";
 import CardEditor from "./CardEditor";
+import CardsTable from "./CardsTable";
+import { useGetDeckCards } from "@/hooks/use-get-deck-cards";
 
-const DeckBrowser = ({ decks }: { decks: DeckNameOption[] }) => {
-  const [selectedDeckId, setSelectedDeckId] = useState<number | undefined>(
-    decks[0]?.id,
-  );
+const DeckBrowser = ({
+  deckNames,
+  currentDeckId,
+}: {
+  deckNames: DeckNameOption[];
+  currentDeckId: number;
+}) => {
+  const [selectedDeckId, setSelectedDeckId] = useState(currentDeckId);
 
-  const handleSelectDeck = (deckId: number) => {
-    if (selectedDeckId != deckId) {
-      setSelectedDeckId(deckId);
-    }
-  };
+  const { data: cards = [] } = useGetDeckCards(selectedDeckId);
 
   return (
     <div className="h-screen">
       <ResizablePanelGroup direction="horizontal" autoSaveId="browser-layout">
         <ResizablePanel defaultSize={50}>
-          <div className="h-full p-3">
+          <div className="flex h-full flex-col p-3">
             <div className="mt-2 flex items-center gap-3">
               <span className="font-medium">Deck</span>
               <SelectDeckCombobox
-                decks={decks}
+                decks={deckNames}
                 deckId={selectedDeckId}
-                onSelect={handleSelectDeck}
+                onSelect={(deckId) => {
+                  if (selectedDeckId !== deckId) {
+                    setSelectedDeckId(deckId);
+                  }
+                }}
               />
+            </div>
+            <div className="py-3">
+              <CardsTable cards={cards} />
             </div>
           </div>
         </ResizablePanel>
