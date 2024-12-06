@@ -7,7 +7,7 @@ export const getAllDecks = async (userId: string) => {
     .select()
     .from(deckTable)
     .where(eq(deckTable.userId, userId))
-    .orderBy(asc(deckTable.id));
+    .orderBy(asc(deckTable.name));
 
   return decks;
 };
@@ -28,7 +28,7 @@ export const getAllDeckNames = async (userId: string) => {
     })
     .from(deckTable)
     .where(eq(deckTable.userId, userId))
-    .orderBy(asc(deckTable.id));
+    .orderBy(asc(deckTable.name));
 
   return result;
 };
