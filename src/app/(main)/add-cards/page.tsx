@@ -7,9 +7,11 @@ const AddCardsPage = async () => {
   const userId = await getCurrentUserId();
   if (!userId) return redirect("/login");
 
-  const decks = await getAllDeckNames(userId);
+  const deckNames = await getAllDeckNames(userId);
 
-  return <DeckBrowser decks={decks} />;
+  const currentDeckId = deckNames.length > 0 ? deckNames[0].id : 0;
+
+  return <DeckBrowser deckNames={deckNames} currentDeckId={currentDeckId} />;
 };
 
 export default AddCardsPage;

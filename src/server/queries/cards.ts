@@ -2,7 +2,7 @@ import { db } from "@/db/db";
 import { cardTable } from "@/db/schema";
 import { asc, eq } from "drizzle-orm";
 
-export const getAllCardsByDeckId = async (deckId: number) => {
+export const getCardsByDeckId = async (deckId: number) => {
   const cards = await db
     .select()
     .from(cardTable)

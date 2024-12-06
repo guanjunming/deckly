@@ -28,7 +28,7 @@ const SelectDeckCombobox = ({
   onSelect,
 }: {
   decks: DeckNameOption[];
-  deckId: number | undefined;
+  deckId: number;
   onSelect: (id: number) => void;
 }) => {
   const [open, setOpen] = useState(false);

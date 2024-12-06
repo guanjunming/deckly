@@ -60,8 +60,8 @@ export const cardTable = pgTable("cards", {
     .notNull()
     .references(() => userTable.id),
   state: cardStateEnum("state").notNull().default("NEW"),
-  front: text("front").notNull(),
-  back: text("back"),
+  front: text("front").notNull().default(""),
+  back: text("back").notNull().default(""),
   createdAt,
   updatedAt,
 });
