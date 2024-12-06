@@ -4,7 +4,7 @@ const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex">
       <Sidebar />
-      <div className="w-full">{children}</div>
+      <div className="min-h-screen w-full">{children}</div>
     </div>
   );
 };

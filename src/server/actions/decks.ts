@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/db/db";
-import { deckTable } from "@/db/schema";
+import { cardTable, deckTable } from "@/db/schema";
 import { deckSchema } from "@/schemas/decks";
 import { z } from "zod";
 import { getCurrentUserId } from "../queries/users";
@@ -62,15 +62,38 @@ export const deleteDeck = async (deckId: number) => {
     return { ok: false, message: "Unauthorized! Please sign in again." };
   }
 
-  const { rowCount } = await db
-    .delete(deckTable)
-    .where(and(eq(deckTable.id, deckId), eq(deckTable.userId, userId)));
+  try {
+    let cardCount;
+    let deckName;
 
-  if (rowCount === 0) {
-    return { ok: false, message: "Deck does not exist." };
+    await db.transaction(async (trx) => {
+      const { rowCount } = await trx
+        .delete(cardTable)
+        .where(eq(cardTable.deckId, deckId));
+
+      cardCount = rowCount;
+
+      const result = await trx
+        .delete(deckTable)
+        .where(and(eq(deckTable.id, deckId), eq(deckTable.userId, userId)))
+        .returning();
+
+      if (!result.length) {
+        throw new Error("Failed to delete deck.");
+      }
+      deckName = result[0].name;
+    });
+
+    revalidatePath("/decks");
+
+    return {
+      ok: true,
+      message: `${cardCount} cards deleted from ${deckName}.`,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { ok: false, message: "Something went wrong!" };
+    }
+    throw error;
   }
-
-  revalidatePath("/decks");
-
-  return { ok: true, message: "Deck has been deleted." };
 };

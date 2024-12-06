@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en" className={roboto.className}>
       <body>
         <main>{children}</main>
-        <Toaster position="bottom-center" />
+        <Toaster position="bottom-left" />
       </body>
     </html>
   );

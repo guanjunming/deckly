@@ -10,11 +10,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deleteDeck } from "@/server/actions/decks";
-import { useTransition } from "react";
 import { toast } from "sonner";
 
 const DeleteDeckAlertDialogContent = ({ id }: { id: number }) => {
-  const [isDeletePending, startDeleteTransition] = useTransition();
+  const handleDelete = async () => {
+    const response = await deleteDeck(id);
+    if (response.ok) {
+      toast.success(response.message);
+    } else {
+      toast.error(response.message);
+    }
+  };
 
   return (
     <AlertDialogContent className="sm:max-w-[425px]">
@@ -28,20 +34,7 @@ const DeleteDeckAlertDialogContent = ({ id }: { id: number }) => {
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel className="rounded-full">Cancel</AlertDialogCancel>
-        <AlertDialogAction
-          className="rounded-full"
-          onClick={() => {
-            startDeleteTransition(async () => {
-              const response = await deleteDeck(id);
-              if (response.ok) {
-                toast.success(response.message);
-              } else {
-                toast.error(response.message);
-              }
-            });
-          }}
-          disabled={isDeletePending}
-        >
+        <AlertDialogAction className="rounded-full" onClick={handleDelete}>
           Delete
         </AlertDialogAction>
       </AlertDialogFooter>

@@ -1,20 +1,18 @@
 "use client";
 
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@/components/ui/label";
 import { AutosizeTextarea } from "../ui/autosize-textarea";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
 import { addCard } from "@/server/actions/cards";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
   const [frontField, setFrontField] = useState("");
   const [backField, setBackField] = useState<string | undefined>("");
 
   const handleAddClicked = async () => {
-    console.log(frontField);
-    console.log(backField);
-
     if (!deckId) return;
 
     const data = {
@@ -26,33 +24,44 @@ const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
     const response = await addCard(data);
     if (response.ok) {
       toast.success(response.message);
+
+      setFrontField("");
+      setBackField("");
     } else {
       toast.error(response.message);
     }
   };
 
   return (
-    <div className="flex h-full w-full flex-col justify-between">
-      <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="front">Front</Label>
-          <AutosizeTextarea
-            id="front"
-            onChange={(e) => setFrontField(e.target.value)}
-            className="text-base"
-          />
+    <div className="flex h-full w-full flex-col">
+      <ScrollArea className="flex-grow">
+        <div className="flex flex-col gap-3 p-3">
+          <div className="space-y-1">
+            <Label htmlFor="front" className="text-base">
+              Front
+            </Label>
+            <AutosizeTextarea
+              id="front"
+              value={frontField}
+              onChange={(e) => setFrontField(e.target.value)}
+              className="resize-none text-base"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="back" className="text-base">
+              Back
+            </Label>
+            <AutosizeTextarea
+              id="back"
+              value={backField}
+              onChange={(e) => setBackField(e.target.value)}
+              className="resize-none text-base"
+            />
+          </div>
         </div>
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="back">Back</Label>
-          <AutosizeTextarea
-            id="back"
-            onChange={(e) => setBackField(e.target.value)}
-            className="text-base"
-          />
-        </div>
-      </div>
+      </ScrollArea>
 
-      <div className="">
+      <div className="mt-2 p-3">
         <Button
           size="lg"
           className="w-full rounded-full"

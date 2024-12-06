@@ -9,11 +9,7 @@ const AddCardsPage = async () => {
 
   const decks = await getAllDeckNames(userId);
 
-  return (
-    <div className="h-screen">
-      <DeckBrowser decks={decks} />
-    </div>
-  );
+  return <DeckBrowser decks={decks} />;
 };
 
 export default AddCardsPage;
