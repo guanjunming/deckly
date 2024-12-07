@@ -1,6 +1,6 @@
 import { db } from "@/db/db";
 import { deckTable } from "@/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 export const getAllDecks = async (userId: string) => {
   const decks = await db
@@ -12,9 +12,9 @@ export const getAllDecks = async (userId: string) => {
   return decks;
 };
 
-export const getDeckById = async (deckId: number) => {
+export const getDeckById = async (deckId: number, userId: string) => {
   const deck = await db.query.deckTable.findFirst({
-    where: eq(deckTable.id, deckId),
+    where: and(eq(deckTable.id, deckId), eq(deckTable.userId, userId)),
   });
 
   return deck;

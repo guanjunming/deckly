@@ -8,6 +8,7 @@ import {
   pgEnum,
   bigserial,
   bigint,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 
 const createdAt = timestamp("created_at").notNull().defaultNow();
@@ -76,3 +77,19 @@ export const cardRelations = relations(cardTable, ({ one }) => ({
     references: [userTable.id],
   }),
 }));
+
+export const activeDeckTable = pgTable(
+  "active_decks",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .unique()
+      .references(() => userTable.id),
+    deckId: bigint("deck_id", { mode: "number" })
+      .notNull()
+      .references(() => deckTable.id),
+  },
+  (table) => {
+    return [primaryKey({ columns: [table.userId, table.deckId] })];
+  },
+);

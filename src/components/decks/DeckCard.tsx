@@ -2,6 +2,9 @@
 
 import { Separator } from "@/components/ui/separator";
 import DeckActionButton from "./DeckActionButton";
+import { useRouter } from "next/navigation";
+import { setActiveDeck } from "@/server/actions/decks";
+import { toast } from "sonner";
 
 interface DeckCardProps {
   id: number;
@@ -18,8 +21,16 @@ const DeckCard = ({
   learnCount,
   dueCount,
 }: DeckCardProps) => {
-  const handleOnClick = () => {
-    console.log("start learn deck: " + id);
+  const router = useRouter();
+
+  const handleOnClick = async () => {
+    const response = await setActiveDeck(id);
+
+    if (response.ok) {
+      router.push(`/decks/${id}`);
+    } else {
+      toast.error("Error loading deck.");
+    }
   };
 
   return (

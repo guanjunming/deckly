@@ -19,9 +19,9 @@ export const addCard = async (values: z.infer<typeof cardAddSchema>) => {
     return { ok: false, message: "Invalid fields." };
   }
 
-  const deck = await getDeckById(data.deckId);
+  const deck = await getDeckById(data.deckId, userId);
   if (!deck) {
-    return { ok: false, message: "Deck does not exist." };
+    return { ok: false, message: "User deck not found." };
   }
 
   await db.insert(cardTable).values({ ...data, userId });
@@ -43,12 +43,12 @@ export const updateCard = async (
     return { ok: false, message: "Invalid fields." };
   }
 
-  const { rowCount } = await db
+  const result = await db
     .update(cardTable)
     .set({ ...data })
     .where(and(eq(cardTable.id, cardId), eq(cardTable.userId, userId)));
 
-  if (rowCount === 0) {
+  if (result.rowCount === 0) {
     return { ok: false, message: "Card does not exist." };
   }
 

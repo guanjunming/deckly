@@ -1,12 +1,13 @@
 "use server";
 
 import { db } from "@/db/db";
-import { cardTable, deckTable } from "@/db/schema";
+import { activeDeckTable, cardTable, deckTable } from "@/db/schema";
 import { deckSchema } from "@/schemas/decks";
 import { z } from "zod";
 import { getCurrentUserId } from "../queries/users";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getDeckById } from "../queries/decks";
 
 export const addDeck = async (values: z.infer<typeof deckSchema>) => {
   const userId = await getCurrentUserId();
@@ -42,13 +43,13 @@ export const renameDeck = async (
     return { ok: false, message: "Invalid fields." };
   }
 
-  const { rowCount } = await db
+  const result = await db
     .update(deckTable)
     .set({ ...data })
     .where(and(eq(deckTable.id, deckId), eq(deckTable.userId, userId)));
 
-  if (rowCount === 0) {
-    return { ok: false, message: "Deck does not exist." };
+  if (result.rowCount === 0) {
+    return { ok: false, message: "User deck not found." };
   }
 
   revalidatePath("/decks");
@@ -96,4 +97,27 @@ export const deleteDeck = async (deckId: number) => {
     }
     throw error;
   }
+};
+
+export const setActiveDeck = async (deckId: number) => {
+  const userId = await getCurrentUserId();
+  if (!userId) {
+    return { ok: false, message: "Unauthorized! Please sign in again." };
+  }
+
+  const deck = await getDeckById(deckId, userId);
+  if (!deck) {
+    return { ok: false, message: "User deck not found." };
+  }
+
+  const result = await db
+    .insert(activeDeckTable)
+    .values({ userId, deckId })
+    .onConflictDoUpdate({ target: activeDeckTable.userId, set: { deckId } });
+
+  if (result.rowCount === 0) {
+    return { ok: false, message: "Failed to set active deck." };
+  }
+
+  return { ok: true, message: "Active deck updated successfully." };
 };
