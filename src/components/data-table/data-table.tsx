@@ -24,15 +24,18 @@ import {
 
 import { DataTableToolbar } from "./data-table-toolbar";
 import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { Card } from "@/types/types";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  setSelectedCard: (card: Card) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  setSelectedCard,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -64,6 +67,10 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const handleRowClick = (card: Card) => {
+    setSelectedCard(card);
+  };
+
   return (
     <div className="flex h-full flex-col gap-3">
       <DataTableToolbar table={table} />
@@ -73,7 +80,7 @@ export function DataTable<TData, TValue>({
             <Table>
               <TableHeader className="bg-secondary">
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <TableRow key={headerGroup.id}>
+                  <TableRow key={headerGroup.id} className="divide-x">
                     {headerGroup.headers.map((header) => {
                       return (
                         <TableHead key={header.id} className="text-primary">
@@ -95,6 +102,8 @@ export function DataTable<TData, TValue>({
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && "selected"}
+                      className="select-none divide-x"
+                      onClick={() => handleRowClick(row.original as Card)}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>

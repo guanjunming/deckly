@@ -10,6 +10,7 @@ import { useState } from "react";
 import CardEditor from "./CardEditor";
 import CardsTable from "./CardsTable";
 import { useGetDeckCards } from "@/hooks/use-get-deck-cards";
+import { Card } from "@/types/types";
 
 const DeckBrowser = ({
   deckNames,
@@ -19,8 +20,20 @@ const DeckBrowser = ({
   currentDeckId: number;
 }) => {
   const [selectedDeckId, setSelectedDeckId] = useState(currentDeckId);
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
   const { data: cards = [] } = useGetDeckCards(selectedDeckId);
+
+  const onSelectDeck = (deckId: number) => {
+    if (selectedDeckId !== deckId) {
+      setSelectedDeckId(deckId);
+      setSelectedCard(null);
+    }
+  };
+
+  const onUpdateCard = () => {
+    setSelectedCard(null);
+  };
 
   return (
     <div className="h-screen">
@@ -32,15 +45,11 @@ const DeckBrowser = ({
               <SelectDeckCombobox
                 decks={deckNames}
                 deckId={selectedDeckId}
-                onSelect={(deckId) => {
-                  if (selectedDeckId !== deckId) {
-                    setSelectedDeckId(deckId);
-                  }
-                }}
+                onSelect={onSelectDeck}
               />
             </div>
             <div className="py-3">
-              <CardsTable cards={cards} />
+              <CardsTable cards={cards} setSelectedCard={setSelectedCard} />
             </div>
           </div>
         </ResizablePanel>
@@ -48,8 +57,12 @@ const DeckBrowser = ({
         <ResizableHandle withHandle />
 
         <ResizablePanel defaultSize={50}>
-          <div className="h-full p-3">
-            <CardEditor deckId={selectedDeckId} />
+          <div className="h-full w-full p-3">
+            <CardEditor
+              deckId={selectedDeckId}
+              selectedCard={selectedCard}
+              onUpdate={onUpdateCard}
+            />
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

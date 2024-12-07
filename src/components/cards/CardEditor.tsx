@@ -3,19 +3,43 @@
 import { Label } from "@/components/ui/label";
 import { AutosizeTextarea } from "../ui/autosize-textarea";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { addCard } from "@/server/actions/cards";
+import { addCard, updateCard } from "@/server/actions/cards";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQueryClient } from "@tanstack/react-query";
+import { Card } from "@/types/types";
 
-const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
+const CardEditor = ({
+  deckId,
+  selectedCard,
+  onUpdate,
+}: {
+  deckId: number | undefined;
+  selectedCard: Card | null;
+  onUpdate: () => void;
+}) => {
   const [frontField, setFrontField] = useState("");
-  const [backField, setBackField] = useState<string | undefined>("");
+  const [backField, setBackField] = useState("");
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if (selectedCard) {
+      setFrontField(selectedCard.front);
+      setBackField(selectedCard.back);
+    } else {
+      setFrontField("");
+      setBackField("");
+    }
+  }, [selectedCard]);
 
   const handleAddClicked = async () => {
     if (!deckId) return;
+
+    if (frontField === "") {
+      toast.error("The front field is empty.");
+      return;
+    }
 
     const data = {
       deckId,
@@ -28,8 +52,30 @@ const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
       toast.success(response.message);
       setFrontField("");
       setBackField("");
-
       queryClient.invalidateQueries({ queryKey: ["cards", deckId] });
+    } else {
+      toast.error(response.message);
+    }
+  };
+
+  const handleUpdateClicked = async () => {
+    if (!selectedCard) return;
+
+    if (frontField === "") {
+      toast.error("The front field is empty.");
+      return;
+    }
+
+    const data = {
+      front: frontField,
+      back: backField,
+    };
+
+    const response = await updateCard(selectedCard.id, data);
+    if (response.ok) {
+      toast.success(response.message);
+      queryClient.invalidateQueries({ queryKey: ["cards", deckId] });
+      onUpdate();
     } else {
       toast.error(response.message);
     }
@@ -64,13 +110,17 @@ const CardEditor = ({ deckId }: { deckId: number | undefined }) => {
         </div>
       </ScrollArea>
 
-      <div className="mt-2 p-3">
+      <div className="mt-2 flex justify-center gap-3 p-3">
+        <Button size="lg" className="rounded-full" onClick={handleAddClicked}>
+          Add
+        </Button>
         <Button
           size="lg"
-          className="w-full rounded-full"
-          onClick={handleAddClicked}
+          variant="outline"
+          className="rounded-full"
+          onClick={handleUpdateClicked}
         >
-          Add
+          Update
         </Button>
       </div>
     </div>
