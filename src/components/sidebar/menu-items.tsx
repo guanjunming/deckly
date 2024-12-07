@@ -5,7 +5,6 @@ import {
   IoBarChart,
 } from "react-icons/io5";
 import { TbCards, TbCardsFilled } from "react-icons/tb";
-import { FaRegFolderOpen, FaFolderOpen } from "react-icons/fa";
 import { PiCrownLight, PiCrownFill } from "react-icons/pi";
 
 export type MenuItemProps = {
@@ -23,16 +22,10 @@ export const menuItems: MenuItemProps[] = [
     path: "/decks",
   },
   {
-    label: "Add Cards",
+    label: "Cards",
     icon: <TbCards />,
     iconActive: <TbCardsFilled />,
-    path: "/add-cards",
-  },
-  {
-    label: "Browser",
-    icon: <FaRegFolderOpen />,
-    iconActive: <FaFolderOpen />,
-    path: "/browser",
+    path: "/cards",
   },
   {
     label: "Statistics",
