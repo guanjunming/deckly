@@ -1,20 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Card } from "@/types/types";
 import { formatDate } from "@/lib/utils";
+import { cardStates } from "./data";
 
 export const columns: ColumnDef<Card>[] = [
   {
@@ -40,16 +31,28 @@ export const columns: ColumnDef<Card>[] = [
     enableHiding: false,
   },
   {
-    id: "Card State",
     accessorKey: "state",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Card State" />
     ),
+    cell: ({ row }) => {
+      return (
+        <div>
+          {
+            cardStates.find((state) => state.value === row.getValue("state"))
+              ?.label
+          }
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "front",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Front" />
+      <DataTableColumnHeader column={column} title="Question" />
     ),
     cell: ({ row }) => {
       return (
@@ -60,16 +63,15 @@ export const columns: ColumnDef<Card>[] = [
   {
     accessorKey: "back",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Back" />
+      <DataTableColumnHeader column={column} title="Answer" />
     ),
     cell: ({ row }) => {
       return (
-        <div className="max-w-[200px] truncate">{row.getValue("front")}</div>
+        <div className="max-w-[200px] truncate">{row.getValue("back")}</div>
       );
     },
   },
   {
-    id: "created",
     accessorKey: "createdAt",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created" />
@@ -79,7 +81,6 @@ export const columns: ColumnDef<Card>[] = [
     },
   },
   {
-    id: "modified",
     accessorKey: "updatedAt",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Modified" />
@@ -88,32 +89,4 @@ export const columns: ColumnDef<Card>[] = [
       return <div className="truncate">{formatDate(getValue<string>())}</div>;
     },
   },
-  //   {
-  //     id: "actions",
-  //     cell: ({ row }) => {
-  //       const payment = row.original;
-
-  //       return (
-  //         <DropdownMenu>
-  //           <DropdownMenuTrigger asChild>
-  //             <Button variant="ghost" className="h-8 w-8 p-0">
-  //               <span className="sr-only">Open menu</span>
-  //               <MoreHorizontal className="h-4 w-4" />
-  //             </Button>
-  //           </DropdownMenuTrigger>
-  //           <DropdownMenuContent align="end">
-  //             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //             <DropdownMenuItem
-  //               onClick={() => navigator.clipboard.writeText(payment.id)}
-  //             >
-  //               Copy payment ID
-  //             </DropdownMenuItem>
-  //             <DropdownMenuSeparator />
-  //             <DropdownMenuItem>View customer</DropdownMenuItem>
-  //             <DropdownMenuItem>View payment details</DropdownMenuItem>
-  //           </DropdownMenuContent>
-  //         </DropdownMenu>
-  //       );
-  //     },
-  //   },
 ];

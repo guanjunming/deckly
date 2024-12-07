@@ -13,7 +13,7 @@ export const GET = async (request: NextRequest) => {
     const cards = await getCardsByDeckId(+deckId);
     return NextResponse.json(cards);
   } catch (error) {
-    console.log(JSON.stringify(error));
+    console.log("Failed to get deck cards: " + JSON.stringify(error));
     return NextResponse.json(
       { error: "Something went wrong!" },
       { status: 500 },

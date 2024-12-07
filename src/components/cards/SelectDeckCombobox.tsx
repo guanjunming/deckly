@@ -37,10 +37,11 @@ const SelectDeckCombobox = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          size="sm"
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full justify-between font-normal"
+          className="w-full justify-between text-base font-normal"
         >
           {deckId
             ? decks.find((deck) => deck.id === deckId)?.name

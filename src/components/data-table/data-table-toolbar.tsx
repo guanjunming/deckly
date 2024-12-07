@@ -1,13 +1,13 @@
 "use client";
 
 import type { Table } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter"
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
+
+import { DataTableViewOptions } from "./data-table-view-options";
 import { X } from "lucide-react";
-// import { priority_options, status_options } from "../filters"
+import { cardStates } from "./data";
+import { DataTableColumnFilter } from "./data-table-column-filter";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -16,41 +16,38 @@ interface DataTableToolbarProps<TData> {
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const isFiltered =
+    table.getState().columnFilters.length > 0 || table.getState().globalFilter;
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        {/* <Input
-          placeholder="Filter tasks..."
-          value={(table.getColumn("front")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("front")?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
-        /> */}
-        {/* {table.getColumn("status") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
-            options={status_options}
+        <Input
+          placeholder="Search cards..."
+          value={(table.getState().globalFilter as string) ?? ""}
+          onChange={(event) => table.setGlobalFilter(event.target.value)}
+          className="h-8 max-w-[300px] text-sm"
+        />
+        {table.getColumn("state") && (
+          <DataTableColumnFilter
+            column={table.getColumn("state")}
+            title="Card State"
+            options={cardStates}
           />
         )}
-        {table.getColumn("priority") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("priority")}
-            title="Priority"
-            options={priority_options}
-          />
-        )} */}
+
         {isFiltered && (
           <Button
             variant="ghost"
-            onClick={() => table.resetColumnFilters()}
-            className="h-8 px-2 lg:px-3"
+            size="sm"
+            onClick={() => {
+              table.resetGlobalFilter();
+              table.resetColumnFilters();
+            }}
+            className="h-8 px-2"
           >
             Reset
-            <X className="ml-2 h-4 w-4" />
+            <X className="h-4 w-4" />
           </Button>
         )}
       </div>
