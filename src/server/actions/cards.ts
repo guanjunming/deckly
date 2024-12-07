@@ -4,7 +4,6 @@ import { db } from "@/db/db";
 import { z } from "zod";
 import { getCurrentUserId } from "../queries/users";
 import { eq, and, inArray } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
 import { cardAddSchema, cardSchemaBase } from "@/schemas/cards";
 import { getDeckById } from "../queries/decks";
 import { cardTable } from "@/db/schema";
@@ -26,8 +25,6 @@ export const addCard = async (values: z.infer<typeof cardAddSchema>) => {
   }
 
   await db.insert(cardTable).values({ ...data, userId });
-
-  //   revalidatePath("/decks");
 
   return { ok: true, message: "Card added." };
 };
@@ -55,8 +52,6 @@ export const updateCard = async (
     return { ok: false, message: "Card does not exist." };
   }
 
-  //   revalidatePath("/decks");
-
   return { ok: true, message: "Card has been updated." };
 };
 
@@ -70,17 +65,12 @@ export const deleteCards = async (cardIds: number[]) => {
     .delete(cardTable)
     .where(and(inArray(cardTable.id, cardIds), eq(cardTable.userId, userId)));
 
-  if (rowCount === 0) {
+  if (rowCount && rowCount > 0) {
     return {
-      ok: false,
-      message: `Failed to delete card${rowCount > 1 ? "s" : ""}.`,
+      ok: true,
+      message: `${rowCount} card${rowCount > 1 ? "s" : ""} deleted.`,
     };
   }
 
-  //   revalidatePath("/decks");
-
-  return {
-    ok: true,
-    message: `${rowCount} card${rowCount > 1 ? "s" : ""} deleted.`,
-  };
+  return { ok: false, message: "Failed to delete cards." };
 };
