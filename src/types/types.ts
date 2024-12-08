@@ -11,3 +11,10 @@ export type Card = {
   easeFactor: number;
   dueDate: Date | null;
 };
+
+export enum Rating {
+  Again,
+  Hard,
+  Good,
+  Easy,
+}
