@@ -7,7 +7,8 @@ import { z } from "zod";
 import { getCurrentUserId } from "../queries/users";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getDeckById } from "../queries/decks";
+import { getActiveDeckId, getDeckById } from "../queries/decks";
+import { redirect } from "next/navigation";
 
 export const addDeck = async (values: z.infer<typeof deckSchema>) => {
   const userId = await getCurrentUserId();
@@ -120,4 +121,18 @@ export const setActiveDeck = async (deckId: number) => {
   }
 
   return { ok: true, message: "Active deck updated successfully." };
+};
+
+export const studyDeck = async (deckId: number) => {
+  const userId = await getCurrentUserId();
+  if (!userId) {
+    return { ok: false, message: "Unauthorized! Please sign in again." };
+  }
+
+  const activeDeckId = await getActiveDeckId(userId);
+  if (activeDeckId !== deckId) {
+    return { ok: false, message: "Something went wrong! Please try again." };
+  }
+
+  redirect("/learn");
 };

@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { getAllDecks } from "@/server/queries/decks";
+import { getAllDecksInfo } from "@/server/queries/decks";
 import { getCurrentUserId } from "@/server/queries/users";
 import { redirect } from "next/navigation";
 import CreateDeckButton from "@/components/decks/CreateDeckButton";
@@ -10,17 +10,17 @@ const DecksPage = async () => {
   const userId = await getCurrentUserId();
   if (!userId) return redirect("/login");
 
-  const decks = await getAllDecks(userId);
+  const decksInfo = await getAllDecksInfo(userId);
 
   return (
-    <div className="mx-auto flex max-w-screen-lg flex-col px-3 py-6">
+    <div className="mx-auto flex max-w-[940px] flex-col px-3 py-6">
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Your decks</h1>
           <CreateDeckButton />
         </div>
 
-        {decks.length > 0 ? (
+        {decksInfo.length > 0 ? (
           <Card className="mt-5 p-5">
             <div className="flex gap-5 border-b pb-2 font-semibold">
               <div className="ml-2 flex-1">Deck</div>
@@ -35,15 +35,15 @@ const DecksPage = async () => {
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-1">
-              {decks.map((deck) => {
+              {decksInfo.map((deckInfo) => {
                 return (
                   <DeckCard
-                    key={deck.id}
-                    id={deck.id}
-                    name={deck.name}
-                    newCount={20}
-                    learnCount={0}
-                    dueCount={0}
+                    key={deckInfo.deck.id}
+                    id={deckInfo.deck.id}
+                    name={deckInfo.deck.name}
+                    newCount={deckInfo.queueCards.new.length}
+                    learnCount={deckInfo.queueCards.learning.length}
+                    dueCount={deckInfo.queueCards.review.length}
                   />
                 );
               })}
@@ -52,9 +52,9 @@ const DecksPage = async () => {
         ) : (
           <div className="mt-32 text-center">
             <h1 className="mb-4 text-4xl font-semibold">You have no decks</h1>
-            <Button size="lg" className="rounded-full">
-              Create new deck
-            </Button>
+            <div className="text-xl text-accent-foreground">
+              Start learning by creating a new deck.
+            </div>
           </div>
         )}
       </div>

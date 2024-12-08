@@ -6,5 +6,8 @@ export type Card = {
   back: string;
   createdAt: Date;
   updatedAt: Date;
-  deck: string;
+  learningStep: number;
+  interval: number;
+  easeFactor: number;
+  dueDate: Date | null;
 };

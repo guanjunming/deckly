@@ -9,6 +9,8 @@ import {
   bigserial,
   bigint,
   primaryKey,
+  integer,
+  real,
 } from "drizzle-orm/pg-core";
 
 const createdAt = timestamp("created_at").notNull().defaultNow();
@@ -65,6 +67,10 @@ export const cardTable = pgTable("cards", {
   back: text("back").notNull().default(""),
   createdAt,
   updatedAt,
+  learningStep: integer("learning_step").notNull().default(0),
+  interval: integer("interval").notNull().default(0),
+  easeFactor: real("ease_factor").notNull().default(0),
+  dueDate: timestamp("due_date"),
 });
 
 export const cardRelations = relations(cardTable, ({ one }) => ({
