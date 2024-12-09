@@ -10,7 +10,8 @@ const AddCardsPage = async () => {
   const deckNames = await getAllDeckNames(userId);
 
   let currentDeckId = await getActiveDeckId(userId);
-  if (!currentDeckId) {
+
+  if (!deckNames.find((deck) => deck.id === currentDeckId)) {
     currentDeckId = deckNames.length > 0 ? deckNames[0].id : 0;
   }
 

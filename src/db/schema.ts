@@ -84,18 +84,9 @@ export const cardRelations = relations(cardTable, ({ one }) => ({
   }),
 }));
 
-export const activeDeckTable = pgTable(
-  "active_decks",
-  {
-    userId: uuid("user_id")
-      .notNull()
-      .unique()
-      .references(() => userTable.id),
-    deckId: bigint("deck_id", { mode: "number" })
-      .notNull()
-      .references(() => deckTable.id),
-  },
-  (table) => {
-    return [primaryKey({ columns: [table.userId, table.deckId] })];
-  },
-);
+export const activeDeckTable = pgTable("active_decks", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => userTable.id),
+  deckId: bigint("deck_id", { mode: "number" }).notNull(),
+});

@@ -84,5 +84,5 @@ export const getActiveDeckId = async (userId: string) => {
     where: eq(activeDeckTable.userId, userId),
   });
 
-  return result?.deckId;
+  return result?.deckId || 0;
 };
