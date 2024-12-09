@@ -113,7 +113,7 @@ export const columns: ColumnDef<Card>[] = [
         <div className="text-center">
           {row.getValue("dueDate") === null
             ? "(new)"
-            : formatDateTime(row.getValue("dueDate"))}
+            : formatDate(row.getValue("dueDate"))}
         </div>
       );
     },

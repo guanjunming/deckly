@@ -112,13 +112,17 @@ const CardEditor = ({
       </ScrollArea>
 
       <div className="mt-2 flex justify-center gap-3 p-3">
-        <Button size="lg" className="rounded-full" onClick={handleAddClicked}>
+        <Button
+          size="lg"
+          className="w-[120px] rounded-full"
+          onClick={handleAddClicked}
+        >
           Add
         </Button>
         <Button
           size="lg"
           variant="outline"
-          className="rounded-full"
+          className="w-[120px] rounded-full"
           onClick={handleUpdateClicked}
         >
           Update
