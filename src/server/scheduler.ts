@@ -7,7 +7,7 @@ import {
   STEPS_INTERVAL,
 } from "@/data/constants";
 import { Card } from "@/types/types";
-import { startOfDay, addHours, addSeconds } from "date-fns";
+import { startOfDay, addSeconds } from "date-fns";
 
 const SECS_IN_DAY = 86400;
 
@@ -45,39 +45,40 @@ export const getReviewIntervals = (
   easeFactor: number,
 ) => {
   // again
-  const againInterval = AGAIN_INTERVAL * SECS_IN_DAY;
+  const againInterval = AGAIN_INTERVAL;
 
   // hard
   let hardMinimum = 0;
   if (HARD_MULTIIPLIER > 1) {
     hardMinimum = currentInterval + 1;
   }
-  const hardInterval =
-    Math.max(Math.round(currentInterval * HARD_MULTIIPLIER), hardMinimum) *
-    SECS_IN_DAY;
+  const hardInterval = Math.max(
+    Math.round(currentInterval * HARD_MULTIIPLIER),
+    hardMinimum,
+  );
 
   // good
   let goodMinimum = currentInterval + 1;
   if (HARD_MULTIIPLIER > 1) {
     goodMinimum = hardInterval + 1;
   }
-  const goodInterval =
-    Math.max(Math.round(currentInterval * easeFactor), goodMinimum) *
-    SECS_IN_DAY;
+  const goodInterval = Math.max(
+    Math.round(currentInterval * easeFactor),
+    goodMinimum,
+  );
 
   // easy
   const easyMinimum = goodInterval + 1;
-  const easyInterval =
-    Math.max(
-      Math.round(currentInterval * easeFactor * EASY_MULTIPLIER),
-      easyMinimum,
-    ) * SECS_IN_DAY;
+  const easyInterval = Math.max(
+    Math.round(currentInterval * easeFactor * EASY_MULTIPLIER),
+    easyMinimum,
+  );
 
   return {
-    again: againInterval,
-    hard: hardInterval,
-    good: goodInterval,
-    easy: easyInterval,
+    again: againInterval * SECS_IN_DAY,
+    hard: hardInterval * SECS_IN_DAY,
+    good: goodInterval * SECS_IN_DAY,
+    easy: easyInterval * SECS_IN_DAY,
   };
 };
 
@@ -96,9 +97,7 @@ export const getScheduledIntervals = (card: Card) => {
 export const getReviewCardDueDate = (delaySecs: number) => {
   const now = new Date();
   const due = addSeconds(now, delaySecs);
-  // 4 hours past midnight of due date
-  const midnight = startOfDay(due);
-  return addHours(midnight, 4);
+  return startOfDay(due);
 };
 
 export const getLearningCardDueDate = (delaySecs: number) => {

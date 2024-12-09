@@ -56,7 +56,7 @@ export const answerCard = async (card: Card, rating: Rating) => {
       card.state = "REVIEW";
       card.easeFactor = INITIAL_EASE_FACTOR;
       card.interval = EASY_INTERVAL;
-      card.dueDate = getReviewCardDueDate(EASY_INTERVAL);
+      card.dueDate = getReviewCardDueDate(intervals.easy);
     }
   } else if (card.state === "REVIEW") {
     if (rating === Rating.Again) {
