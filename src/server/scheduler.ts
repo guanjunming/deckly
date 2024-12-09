@@ -6,6 +6,7 @@ import {
   HARD_MULTIIPLIER,
   STEPS_INTERVAL,
 } from "@/data/constants";
+import { addDays, startOfDay, addHours, addSeconds } from "date-fns";
 
 export const getLearningIntervals = (learningStep: number) => {
   // again
@@ -21,7 +22,7 @@ export const getLearningIntervals = (learningStep: number) => {
 
   // good
   let goodInterval = GRADUATING_INTERVAL;
-  if (learningStep < STEPS_INTERVAL.length) {
+  if (learningStep < STEPS_INTERVAL.length - 1) {
     goodInterval = STEPS_INTERVAL[learningStep + 1];
   }
 
@@ -76,4 +77,17 @@ export const getReviewIntervals = (
     good: goodInterval,
     easy: easyInterval,
   };
+};
+
+export const getReviewCardDueDate = (intervalDays: number) => {
+  const now = new Date();
+  const due = addDays(now, intervalDays);
+  // 4 hours past midnight of due date
+  const midnight = startOfDay(due);
+  return addHours(midnight, 4);
+};
+
+export const getLearningCardDueDate = (delaySecs: number) => {
+  const now = new Date();
+  return addSeconds(now, delaySecs);
 };

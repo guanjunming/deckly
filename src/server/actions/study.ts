@@ -2,7 +2,12 @@
 
 import { Card, Rating } from "@/types/types";
 import { getCurrentUserId } from "../queries/users";
-import { getLearningIntervals, getReviewIntervals } from "../scheduler";
+import {
+  getLearningCardDueDate,
+  getLearningIntervals,
+  getReviewCardDueDate,
+  getReviewIntervals,
+} from "../scheduler";
 import {
   EASE_FACTOR_AGAIN_DELTA,
   EASE_FACTOR_EASY_DELTA,
@@ -24,8 +29,6 @@ export const answerCard = async (card: Card, rating: Rating) => {
     return { ok: false, message: "Unauthorized! Please sign in again." };
   }
 
-  const now = new Date();
-
   let intervals;
   if (card.state === "REVIEW") {
     intervals = getReviewIntervals(card.interval, card.easeFactor);
@@ -40,54 +43,44 @@ export const answerCard = async (card: Card, rating: Rating) => {
 
     if (rating === Rating.Again) {
       card.learningStep = 0;
-      card.dueDate = new Date(now.getTime() + intervals.again * 1000);
+      card.dueDate = getLearningCardDueDate(intervals.again);
     } else if (rating === Rating.Hard) {
-      card.dueDate = new Date(now.getTime() + intervals.hard * 1000);
+      card.dueDate = getLearningCardDueDate(intervals.hard);
     } else if (rating === Rating.Good) {
-      card.learningStep += 1;
-      if (card.learningStep >= STEPS_INTERVAL.length) {
+      // still have steps remaining
+      if (card.learningStep < STEPS_INTERVAL.length - 1) {
+        card.dueDate = getLearningCardDueDate(intervals.good);
+      } else {
+        // graduate to review card
         card.state = "REVIEW";
         card.easeFactor = INITIAL_EASE_FACTOR;
         card.interval = GRADUATING_INTERVAL;
-        card.dueDate = new Date(
-          now.getTime() + intervals.good * 24 * 60 * 60 * 1000,
-        );
-      } else {
-        card.dueDate = new Date(now.getTime() + intervals.good * 1000);
+        card.dueDate = getReviewCardDueDate(GRADUATING_INTERVAL);
       }
+      card.learningStep++;
     } else if (rating === Rating.Easy) {
       card.state = "REVIEW";
       card.easeFactor = INITIAL_EASE_FACTOR;
       card.interval = EASY_INTERVAL;
-      card.dueDate = new Date(
-        now.getTime() + intervals.easy * 24 * 60 * 60 * 1000,
-      );
+      card.dueDate = getReviewCardDueDate(EASY_INTERVAL);
     }
   } else if (card.state === "REVIEW") {
     if (rating === Rating.Again) {
-      card.dueDate = new Date(
-        now.getTime() + intervals.again * 24 * 60 * 60 * 1000,
-      );
+      card.dueDate = getReviewCardDueDate(intervals.again);
       card.easeFactor = Math.max(
         card.easeFactor + EASE_FACTOR_AGAIN_DELTA,
         MINIMUM_EASE_FACTOR,
       );
     } else if (rating === Rating.Hard) {
-      card.dueDate = new Date(
-        now.getTime() + intervals.hard * 24 * 60 * 60 * 1000,
-      );
+      card.dueDate = getReviewCardDueDate(intervals.hard);
       card.easeFactor = Math.max(
         card.easeFactor + EASE_FACTOR_HARD_DELTA,
         MINIMUM_EASE_FACTOR,
       );
     } else if (rating === Rating.Good) {
-      card.dueDate = new Date(
-        now.getTime() + intervals.good * 24 * 60 * 60 * 1000,
-      );
+      card.dueDate = getReviewCardDueDate(intervals.good);
     } else if (rating === Rating.Easy) {
-      card.dueDate = new Date(
-        now.getTime() + intervals.easy * 24 * 60 * 60 * 1000,
-      );
+      card.dueDate = getReviewCardDueDate(intervals.easy);
       card.easeFactor = card.easeFactor + EASE_FACTOR_EASY_DELTA;
     }
   }
