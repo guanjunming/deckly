@@ -7,6 +7,7 @@ import { IoBookOutline } from "react-icons/io5";
 import { GoClock } from "react-icons/go";
 import { getDeckInfo } from "@/server/queries/decks";
 import StudyNowButton from "@/components/decks/StudyNowButton";
+import { PiSealCheckFill } from "react-icons/pi";
 
 const StudyDeckPage = async ({
   params,
@@ -24,54 +25,69 @@ const StudyDeckPage = async ({
 
   const { deck, queueCards } = deckInfo;
 
+  const totalCount =
+    queueCards.new.length +
+    queueCards.learning.length +
+    queueCards.review.length;
+
   return (
     <div className="mx-auto max-w-[940px] px-6 pt-12">
       <Card className="flex flex-col gap-7 p-6">
         <div className="border-b pb-3 text-2xl font-semibold">{deck.name}</div>
 
         <div className="flex justify-center gap-6 rounded-3xl bg-muted p-7">
-          <div className="relative flex items-center justify-center">
-            <Circle width={150} height={150} className="text-zinc-200" />
-            <div className="absolute text-6xl font-bold">
-              {queueCards.new.length +
-                queueCards.learning.length +
-                queueCards.review.length}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center gap-5">
-            <div className="flex min-w-24 flex-col">
-              <div className="flex items-center justify-center">
-                <BsFilePlus size={30} />
-                <div className="ml-1 text-4xl font-bold text-blue-500">
-                  {queueCards.new.length}
+          {totalCount > 0 ? (
+            <>
+              <div className="relative flex items-center justify-center">
+                <Circle width={150} height={150} className="text-zinc-200" />
+                <div className="absolute text-6xl font-bold">{totalCount}</div>
+              </div>
+              <div className="flex items-center justify-center gap-5">
+                <div className="flex min-w-24 flex-col">
+                  <div className="flex items-center justify-center">
+                    <BsFilePlus size={30} />
+                    <div className="ml-1 text-4xl font-bold text-blue-500">
+                      {queueCards.new.length}
+                    </div>
+                  </div>
+                  <div className="flex justify-center font-medium">New</div>
+                </div>
+                <div className="flex min-w-24 flex-col">
+                  <div className="flex items-center justify-center">
+                    <IoBookOutline size={30} />
+                    <div className="ml-1 text-4xl font-bold text-red-500">
+                      {queueCards.learning.length}
+                    </div>
+                  </div>
+                  <div className="flex justify-center font-medium">
+                    Learning
+                  </div>
+                </div>
+                <div className="flex min-w-24 flex-col">
+                  <div className="flex items-center justify-center">
+                    <GoClock size={30} />
+                    <div className="ml-1 text-4xl font-bold text-green-500">
+                      {queueCards.review.length}
+                    </div>
+                  </div>
+                  <div className="flex justify-center font-medium">
+                    To Review
+                  </div>
                 </div>
               </div>
-              <div className="flex justify-center font-medium">New</div>
-            </div>
-            <div className="flex min-w-24 flex-col">
-              <div className="flex items-center justify-center">
-                <IoBookOutline size={30} />
-                <div className="ml-1 text-4xl font-bold text-red-500">
-                  {queueCards.learning.length}
-                </div>
+            </>
+          ) : (
+            <div className="mx-auto flex max-w-[500px] flex-col items-center gap-2">
+              <PiSealCheckFill className="h-14 w-14 text-green-500" />
+              <div className="text-center text-4xl font-semibold">
+                Congratulations! You have finished this deck for now.
               </div>
-              <div className="flex justify-center font-medium">Learning</div>
             </div>
-            <div className="flex min-w-24 flex-col">
-              <div className="flex items-center justify-center">
-                <GoClock size={30} />
-                <div className="ml-1 text-4xl font-bold text-green-500">
-                  {queueCards.review.length}
-                </div>
-              </div>
-              <div className="flex justify-center font-medium">To Review</div>
-            </div>
-          </div>
+          )}
         </div>
 
         <div className="flex justify-center">
-          <StudyNowButton deckId={deck.id} />
+          <StudyNowButton deckId={deck.id} disabled={totalCount === 0} />
         </div>
       </Card>
     </div>

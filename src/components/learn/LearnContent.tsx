@@ -8,9 +8,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import AnswerButton from "./AnswerButton";
 import DOMPurify from "dompurify";
+import { useQueryClient } from "@tanstack/react-query";
 
 const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
   const [showAnswer, setShowAnswer] = useState(false);
+  const queryClient = useQueryClient();
 
   const { deckName, card, intervals, newCount, learningCount, reviewCount } =
     queuedCardRes;
@@ -24,6 +26,8 @@ const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
 
     if (result.ok) {
       setShowAnswer(false);
+
+      queryClient.invalidateQueries({ queryKey: ["cards", card.deckId] });
     } else {
       toast.error(result.message);
     }

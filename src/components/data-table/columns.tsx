@@ -113,7 +113,7 @@ export const columns: ColumnDef<Card>[] = [
         <div className="text-center">
           {row.getValue("dueDate") === null
             ? "(new)"
-            : formatDate(row.getValue("dueDate"))}
+            : formatDateTime(row.getValue("dueDate"))}
         </div>
       );
     },
@@ -140,12 +140,12 @@ export const columns: ColumnDef<Card>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Ease" />
     ),
-    cell: ({ row, getValue }) => {
+    cell: ({ row }) => {
       return (
         <div className="text-center">
           {row.getValue("state") === "NEW"
             ? "(new)"
-            : `${getValue<number>() * 100}%`}
+            : `${Math.round(row.getValue<number>("easeFactor") * 100)}%`}
         </div>
       );
     },
