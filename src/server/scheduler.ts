@@ -9,7 +9,7 @@ import {
 import { Card } from "@/types/types";
 import { startOfDay, addHours, addSeconds } from "date-fns";
 
-const DAY_SECS = 86400;
+const SECS_IN_DAY = 86400;
 
 export const getLearningIntervals = (learningStep: number) => {
   // again
@@ -24,13 +24,13 @@ export const getLearningIntervals = (learningStep: number) => {
   }
 
   // good
-  let goodInterval = GRADUATING_INTERVAL * DAY_SECS;
+  let goodInterval = GRADUATING_INTERVAL * SECS_IN_DAY;
   if (learningStep < STEPS_INTERVAL.length - 1) {
     goodInterval = STEPS_INTERVAL[learningStep + 1];
   }
 
   // easy
-  const easyInterval = EASY_INTERVAL * DAY_SECS;
+  const easyInterval = EASY_INTERVAL * SECS_IN_DAY;
 
   return {
     again: againInterval,
@@ -45,7 +45,7 @@ export const getReviewIntervals = (
   easeFactor: number,
 ) => {
   // again
-  const againInterval = AGAIN_INTERVAL * DAY_SECS;
+  const againInterval = AGAIN_INTERVAL * SECS_IN_DAY;
 
   // hard
   let hardMinimum = 0;
@@ -54,7 +54,7 @@ export const getReviewIntervals = (
   }
   const hardInterval =
     Math.max(Math.round(currentInterval * HARD_MULTIIPLIER), hardMinimum) *
-    DAY_SECS;
+    SECS_IN_DAY;
 
   // good
   let goodMinimum = currentInterval + 1;
@@ -62,7 +62,8 @@ export const getReviewIntervals = (
     goodMinimum = hardInterval + 1;
   }
   const goodInterval =
-    Math.max(Math.round(currentInterval * easeFactor), goodMinimum) * DAY_SECS;
+    Math.max(Math.round(currentInterval * easeFactor), goodMinimum) *
+    SECS_IN_DAY;
 
   // easy
   const easyMinimum = goodInterval + 1;
@@ -70,7 +71,7 @@ export const getReviewIntervals = (
     Math.max(
       Math.round(currentInterval * easeFactor * EASY_MULTIPLIER),
       easyMinimum,
-    ) * DAY_SECS;
+    ) * SECS_IN_DAY;
 
   return {
     again: againInterval,
