@@ -1,5 +1,5 @@
 import DeckBrowser from "@/components/cards/DeckBrowser";
-import { getAllDeckNames } from "@/server/queries/decks";
+import { getActiveDeckId, getAllDeckNames } from "@/server/queries/decks";
 import { getCurrentUserId } from "@/server/queries/users";
 import { redirect } from "next/navigation";
 
@@ -9,7 +9,10 @@ const AddCardsPage = async () => {
 
   const deckNames = await getAllDeckNames(userId);
 
-  const currentDeckId = deckNames.length > 0 ? deckNames[0].id : 0;
+  let currentDeckId = await getActiveDeckId(userId);
+  if (!currentDeckId) {
+    currentDeckId = deckNames.length > 0 ? deckNames[0].id : 0;
+  }
 
   return <DeckBrowser deckNames={deckNames} currentDeckId={currentDeckId} />;
 };

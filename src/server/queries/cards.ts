@@ -14,9 +14,11 @@ export const getCardsByDeckId = async (deckId: number) => {
 };
 
 export const gatherCards = async (deckId: number) => {
-  const learningCards = await gatherLearningCards(deckId);
-  const reviewCards = await gatherReviewCards(deckId);
-  const newCards = await gatherNewCards(deckId);
+  const [learningCards, reviewCards, newCards] = await Promise.all([
+    gatherLearningCards(deckId),
+    gatherReviewCards(deckId),
+    gatherNewCards(deckId),
+  ]);
 
   return {
     learning: learningCards,

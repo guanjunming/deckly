@@ -59,6 +59,7 @@ export const getAllDecksInfo = async (userId: string) => {
       name: true,
     },
     where: eq(deckTable.userId, userId),
+    orderBy: asc(deckTable.name),
   });
 
   if (decks.length === 0) {
