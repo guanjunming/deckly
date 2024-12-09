@@ -4,9 +4,8 @@ import { Card, Rating } from "@/types/types";
 import { getCurrentUserId } from "../queries/users";
 import {
   getLearningCardDueDate,
-  getLearningIntervals,
   getReviewCardDueDate,
-  getReviewIntervals,
+  getScheduledIntervals,
 } from "../scheduler";
 import {
   EASE_FACTOR_AGAIN_DELTA,
@@ -29,12 +28,7 @@ export const answerCard = async (card: Card, rating: Rating) => {
     return { ok: false, message: "Unauthorized! Please sign in again." };
   }
 
-  let intervals;
-  if (card.state === "REVIEW") {
-    intervals = getReviewIntervals(card.interval, card.easeFactor);
-  } else {
-    intervals = getLearningIntervals(card.learningStep);
-  }
+  const intervals = getScheduledIntervals(card);
 
   if (card.state === "NEW" || card.state === "LEARN") {
     if (card.state === "NEW") {
@@ -55,7 +49,7 @@ export const answerCard = async (card: Card, rating: Rating) => {
         card.state = "REVIEW";
         card.easeFactor = INITIAL_EASE_FACTOR;
         card.interval = GRADUATING_INTERVAL;
-        card.dueDate = getReviewCardDueDate(GRADUATING_INTERVAL);
+        card.dueDate = getReviewCardDueDate(intervals.good);
       }
       card.learningStep++;
     } else if (rating === Rating.Easy) {

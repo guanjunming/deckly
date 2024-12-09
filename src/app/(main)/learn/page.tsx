@@ -7,13 +7,13 @@ const LearnPage = async () => {
   const userId = await getCurrentUserId();
   if (!userId) return redirect("/login");
 
-  const queuedCard = await getQueuedCard(userId);
+  const queuedCardRes = await getQueuedCard(userId);
 
-  if (!queuedCard) {
+  if (!queuedCardRes) {
     return <div>Congratulations! You have finished this deck for now.</div>;
   }
 
-  return <LearnContent queuedCard={queuedCard} />;
+  return <LearnContent queuedCardRes={queuedCardRes} />;
 };
 
 export default LearnPage;

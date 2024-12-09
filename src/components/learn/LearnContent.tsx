@@ -3,24 +3,24 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { answerCard } from "@/server/actions/study";
-import { Rating } from "@/types/types";
+import { QueuedCardRes, Rating } from "@/types/types";
 import { useState } from "react";
 import { toast } from "sonner";
+import AnswerButton from "./AnswerButton";
 
-const LearnContent = ({ queuedCard }: { queuedCard: any }) => {
+const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
   const [showAnswer, setShowAnswer] = useState(false);
 
-  const { deck, card, cardIntervals, newCount, learningCount, reviewCount } =
-    queuedCard;
+  const { deckName, card, intervals, newCount, learningCount, reviewCount } =
+    queuedCardRes;
 
   const handleShowAnswer = () => {
     setShowAnswer(true);
   };
 
   const handleAnswer = async (rating: Rating) => {
-    console.log(JSON.stringify(card));
     const result = await answerCard(card, rating);
-    console.log(result);
+
     if (result.ok) {
       setShowAnswer(false);
     } else {
@@ -31,7 +31,7 @@ const LearnContent = ({ queuedCard }: { queuedCard: any }) => {
   return (
     <div className="mx-auto flex h-screen max-w-screen-lg flex-col px-3 pb-2 pt-5">
       <div className="flex h-full flex-col gap-1.5">
-        <div className="mb-4 text-3xl font-semibold">{deck.name}</div>
+        <div className="mb-4 text-3xl font-semibold">{deckName}</div>
 
         <div className="flex flex-grow flex-col overflow-auto py-3 text-center text-xl">
           <div dangerouslySetInnerHTML={{ __html: card.front }} />
@@ -74,42 +74,30 @@ const LearnContent = ({ queuedCard }: { queuedCard: any }) => {
           </div>
         ) : (
           <div className="mb-1 flex justify-center gap-4 py-2">
-            <div>
-              <div className="text-center">{`${cardIntervals.again}`}</div>
-              <Button
-                onClick={() => handleAnswer(Rating.Again)}
-                className="rounded-full bg-blue-500 px-6 hover:bg-blue-600/90"
-              >
-                Again
-              </Button>
-            </div>
-            <div>
-              <div className="text-center">{`${cardIntervals.hard}`}</div>
-              <Button
-                onClick={() => handleAnswer(Rating.Hard)}
-                className="rounded-full bg-blue-500 px-6 hover:bg-blue-600/90"
-              >
-                Hard
-              </Button>
-            </div>
-            <div>
-              <div className="text-center">{`${cardIntervals.good}`}</div>
-              <Button
-                onClick={() => handleAnswer(Rating.Good)}
-                className="rounded-full bg-blue-500 px-6 hover:bg-blue-600/90"
-              >
-                Good
-              </Button>
-            </div>
-            <div>
-              <div className="text-center">{`${cardIntervals.easy}`}</div>
-              <Button
-                onClick={() => handleAnswer(Rating.Easy)}
-                className="rounded-full bg-blue-500 px-6 hover:bg-blue-600/90"
-              >
-                Easy
-              </Button>
-            </div>
+            <AnswerButton
+              interval={intervals.again}
+              onClick={() => handleAnswer(Rating.Again)}
+            >
+              Again
+            </AnswerButton>
+            <AnswerButton
+              interval={intervals.hard}
+              onClick={() => handleAnswer(Rating.Hard)}
+            >
+              Hard
+            </AnswerButton>
+            <AnswerButton
+              interval={intervals.good}
+              onClick={() => handleAnswer(Rating.Good)}
+            >
+              Good
+            </AnswerButton>
+            <AnswerButton
+              interval={intervals.easy}
+              onClick={() => handleAnswer(Rating.Easy)}
+            >
+              Easy
+            </AnswerButton>
           </div>
         )}
       </div>

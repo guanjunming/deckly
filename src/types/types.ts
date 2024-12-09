@@ -18,3 +18,19 @@ export enum Rating {
   Good,
   Easy,
 }
+
+export type ScheduledIntervals = {
+  again: number;
+  hard: number;
+  good: number;
+  easy: number;
+};
+
+export type QueuedCardRes = {
+  deckName: string;
+  card: Card;
+  intervals: ScheduledIntervals;
+  newCount: number;
+  learningCount: number;
+  reviewCount: number;
+};

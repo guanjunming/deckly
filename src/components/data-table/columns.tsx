@@ -82,9 +82,11 @@ export const columns: ColumnDef<Card>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created" />
     ),
-    cell: ({ getValue }) => {
+    cell: ({ row }) => {
       return (
-        <div className="truncate">{formatDateTime(getValue<string>())}</div>
+        <div className="truncate">
+          {formatDateTime(row.getValue("createdAt"))}
+        </div>
       );
     },
   },
@@ -93,9 +95,11 @@ export const columns: ColumnDef<Card>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Modified" />
     ),
-    cell: ({ getValue }) => {
+    cell: ({ row }) => {
       return (
-        <div className="truncate">{formatDateTime(getValue<string>())}</div>
+        <div className="truncate">
+          {formatDateTime(row.getValue("updatedAt"))}
+        </div>
       );
     },
   },
@@ -104,12 +108,12 @@ export const columns: ColumnDef<Card>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Due" />
     ),
-    cell: ({ row, getValue }) => {
+    cell: ({ row }) => {
       return (
-        <div className="truncate text-center">
+        <div className="text-center">
           {row.getValue("dueDate") === null
             ? "(new)"
-            : formatDate(getValue<string>())}
+            : formatDate(row.getValue("dueDate"))}
         </div>
       );
     },

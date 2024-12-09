@@ -1,7 +1,10 @@
-import { getLearningIntervals, getReviewIntervals } from "../scheduler";
+import { getScheduledIntervals } from "../scheduler";
 import { getActiveDeckId, getDeckInfo } from "./decks";
+import { QueuedCardRes } from "@/types/types";
 
-export const getQueuedCard = async (userId: string) => {
+export const getQueuedCard = async (
+  userId: string,
+): Promise<QueuedCardRes | null> => {
   const currentDeckId = await getActiveDeckId(userId);
 
   if (!currentDeckId) return null;
@@ -41,20 +44,10 @@ export const getQueuedCard = async (userId: string) => {
   }
 
   if (queuedCard) {
-    let cardIntervals;
-    if (queuedCard.state === "REVIEW") {
-      cardIntervals = getReviewIntervals(
-        queuedCard.interval,
-        queuedCard.easeFactor,
-      );
-    } else {
-      cardIntervals = getLearningIntervals(queuedCard.learningStep);
-    }
-
     return {
-      deck,
+      deckName: deck.name,
       card: queuedCard,
-      cardIntervals,
+      intervals: getScheduledIntervals(queuedCard),
       newCount: newCards.length,
       learningCount: learning.length,
       reviewCount: review.length,
