@@ -19,14 +19,14 @@ export function DataTableColumnHeader<TData, TValue>({
   }
 
   return (
-    <div className={cn("flex items-center space-x-2", className)}>
+    <div className={cn("flex items-center", className)}>
       <Button
         variant="ghost"
         size="sm"
-        className="-ml-3 h-8 data-[state=open]:bg-accent"
+        className="flex h-8 w-full justify-between data-[state=open]:bg-accent"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        <span>{title}</span>
+        <span className="text-sm">{title}</span>
 
         {column.getIsSorted() === "desc" ? (
           <ChevronDown />

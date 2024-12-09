@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Card } from "@/types/types";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatDateTime } from "@/lib/utils";
 import { cardStates } from "./data";
 
 export const columns: ColumnDef<Card>[] = [
@@ -43,7 +43,7 @@ export const columns: ColumnDef<Card>[] = [
     ),
     cell: ({ row }) => {
       return (
-        <div>
+        <div className="text-center">
           {
             cardStates.find((state) => state.value === row.getValue("state"))
               ?.label
@@ -83,7 +83,9 @@ export const columns: ColumnDef<Card>[] = [
       <DataTableColumnHeader column={column} title="Created" />
     ),
     cell: ({ getValue }) => {
-      return <div className="truncate">{formatDate(getValue<string>())}</div>;
+      return (
+        <div className="truncate">{formatDateTime(getValue<string>())}</div>
+      );
     },
   },
   {
@@ -92,7 +94,56 @@ export const columns: ColumnDef<Card>[] = [
       <DataTableColumnHeader column={column} title="Modified" />
     ),
     cell: ({ getValue }) => {
-      return <div className="truncate">{formatDate(getValue<string>())}</div>;
+      return (
+        <div className="truncate">{formatDateTime(getValue<string>())}</div>
+      );
+    },
+  },
+  {
+    accessorKey: "dueDate",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Due" />
+    ),
+    cell: ({ row, getValue }) => {
+      return (
+        <div className="truncate text-center">
+          {row.getValue("dueDate") === null
+            ? "(new)"
+            : formatDate(getValue<string>())}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "interval",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Interval" />
+    ),
+    cell: ({ row, getValue }) => {
+      return (
+        <div className="text-center">
+          {getValue<number>() > 0
+            ? `${getValue<number>()} day${getValue<number>() > 1 ? "s" : ""}`
+            : row.getValue("state") === "NEW"
+              ? "(new)"
+              : "(learning)"}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "easeFactor",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Ease" />
+    ),
+    cell: ({ row, getValue }) => {
+      return (
+        <div className="text-center">
+          {row.getValue("state") === "NEW"
+            ? "(new)"
+            : `${getValue<number>() * 100}%`}
+        </div>
+      );
     },
   },
 ];

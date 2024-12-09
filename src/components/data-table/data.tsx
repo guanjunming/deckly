@@ -19,4 +19,7 @@ export const columnLabels = {
   back: "Answer",
   createdAt: "Created",
   updatedAt: "Modified",
+  dueDate: "Due",
+  interval: "Interval",
+  easeFactor: "Ease",
 };
