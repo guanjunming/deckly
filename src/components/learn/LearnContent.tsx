@@ -7,6 +7,7 @@ import { QueuedCardRes, Rating } from "@/types/types";
 import { useState } from "react";
 import { toast } from "sonner";
 import AnswerButton from "./AnswerButton";
+import DOMPurify from "dompurify";
 
 const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
   const [showAnswer, setShowAnswer] = useState(false);
@@ -28,17 +29,20 @@ const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
     }
   };
 
+  const cleanFront = DOMPurify.sanitize(card.front);
+  const cleanBack = DOMPurify.sanitize(card.back);
+
   return (
     <div className="mx-auto flex h-screen max-w-screen-lg flex-col px-3 pb-2 pt-5">
       <div className="flex h-full flex-col gap-1.5">
         <div className="mb-4 text-3xl font-semibold">{deckName}</div>
 
         <div className="flex flex-grow flex-col overflow-auto py-3 text-center text-xl">
-          <div dangerouslySetInnerHTML={{ __html: card.front }} />
+          <div dangerouslySetInnerHTML={{ __html: cleanFront }} />
           {showAnswer && (
             <>
               <Separator className="my-5" />
-              <div dangerouslySetInnerHTML={{ __html: card.back }} />
+              <div dangerouslySetInnerHTML={{ __html: cleanBack }} />
             </>
           )}
         </div>

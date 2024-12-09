@@ -9,6 +9,7 @@ import { addCard, updateCard } from "@/server/actions/cards";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/types/types";
+import DOMPurify from "dompurify";
 
 const CardEditor = ({
   deckId,
@@ -43,8 +44,8 @@ const CardEditor = ({
 
     const data = {
       deckId,
-      front: frontField,
-      back: backField,
+      front: DOMPurify.sanitize(frontField),
+      back: DOMPurify.sanitize(backField),
     };
 
     const response = await addCard(data);
