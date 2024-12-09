@@ -9,7 +9,7 @@ import { addCard, updateCard } from "@/server/actions/cards";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/types/types";
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 
 const CardEditor = ({
   deckId,

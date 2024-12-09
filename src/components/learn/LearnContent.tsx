@@ -7,7 +7,7 @@ import { QueuedCardRes, Rating } from "@/types/types";
 import { useState } from "react";
 import { toast } from "sonner";
 import AnswerButton from "./AnswerButton";
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 import { useQueryClient } from "@tanstack/react-query";
 
 const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
@@ -26,7 +26,7 @@ const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
 
     if (result.ok) {
       setShowAnswer(false);
-
+      // in order to refetch cards in cards browser
       queryClient.invalidateQueries({ queryKey: ["cards", card.deckId] });
     } else {
       toast.error(result.message);
