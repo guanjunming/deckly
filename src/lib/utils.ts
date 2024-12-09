@@ -40,3 +40,7 @@ export const formatTime = (seconds: number) => {
     return `${years.toFixed(years % 1 === 0 ? 0 : 1)}y`;
   }
 };
+
+export const getTodayDate = () => {
+  return new Date().toISOString().split("T")[0];
+};

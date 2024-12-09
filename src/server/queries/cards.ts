@@ -1,6 +1,7 @@
 import { NEW_PER_DAY, REVIEWS_PER_DAY } from "@/data/constants";
 import { db } from "@/db/db";
-import { cardTable } from "@/db/schema";
+import { cardTable, deckProgressTable } from "@/db/schema";
+import { getTodayDate } from "@/lib/utils";
 import { asc, eq, and, lte, sql } from "drizzle-orm";
 
 export const getCardsByDeckId = async (deckId: number) => {
@@ -55,12 +56,32 @@ const gatherReviewCards = async (deckId: number) => {
 };
 
 const gatherNewCards = async (deckId: number) => {
+  const today = getTodayDate();
+
+  const deckProgress = await db
+    .select()
+    .from(deckProgressTable)
+    .where(
+      and(
+        eq(deckProgressTable.deckId, deckId),
+        eq(deckProgressTable.studyDate, today),
+      ),
+    )
+    .limit(1);
+
+  const newCardsStudied = deckProgress[0]?.newStudied || 0;
+  const remainingNewCards = Math.max(NEW_PER_DAY - newCardsStudied, 0);
+
+  if (remainingNewCards === 0) {
+    return [];
+  }
+
   const cards = await db
     .select()
     .from(cardTable)
     .where(and(eq(cardTable.deckId, deckId), eq(cardTable.state, "NEW")))
     .orderBy(asc(cardTable.id))
-    .limit(NEW_PER_DAY);
+    .limit(remainingNewCards);
 
   return cards;
 };

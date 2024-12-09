@@ -29,16 +29,20 @@ export const getQueuedCard = async (
     queuedCard = learning[0];
   }
 
-  // todo: to mix taking review and new card
-  if (queuedCard === null && review.length > 0) {
-    queuedCard = review[0];
+  // mix taking review and new card
+  if (queuedCard === null) {
+    // if have review cards and new cards, randomly pick one
+    if (review.length > 0 && newCards.length > 0) {
+      const rand = Math.random() < 0.5;
+      queuedCard = rand ? review[0] : newCards[0];
+    } else if (review.length > 0) {
+      queuedCard = review[0];
+    } else if (newCards.length > 0) {
+      queuedCard = newCards[0];
+    }
   }
 
-  if (queuedCard === null && newCards.length > 0) {
-    queuedCard = newCards[0];
-  }
-
-  // if no review and new cards left, take next available learning card is any
+  // if no review and new cards left, take next available learning card if any
   if (queuedCard === null && learning.length > 0) {
     queuedCard = learning[0];
   }

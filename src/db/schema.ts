@@ -11,6 +11,7 @@ import {
   primaryKey,
   integer,
   real,
+  date,
 } from "drizzle-orm/pg-core";
 
 const createdAt = timestamp("created_at").notNull().defaultNow();
@@ -19,15 +20,12 @@ const updatedAt = timestamp("updated_at")
   .defaultNow()
   .$onUpdate(() => new Date());
 
-export const rolesEnum = pgEnum("roles", ["BASIC", "PREMIUM"]);
-
 export const userTable = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
   email: varchar("email").notNull().unique(),
   password: text("password"),
   createdAt,
-  role: rolesEnum("role").notNull().default("BASIC"),
 });
 
 export const userRelations = relations(userTable, ({ many }) => ({
@@ -90,3 +88,23 @@ export const activeDeckTable = pgTable("active_decks", {
     .references(() => userTable.id),
   deckId: bigint("deck_id", { mode: "number" }).notNull(),
 });
+
+export const deckProgressTable = pgTable(
+  "deck_progress",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => userTable.id),
+    deckId: bigint("deck_id", { mode: "number" }).notNull(),
+    studyDate: date("study_date").notNull(),
+    newStudied: integer("new_studied").notNull().default(0),
+    learningStudied: integer("learning_studied").notNull().default(0),
+    reviewStudied: integer("review_studied").notNull().default(0),
+    timeStudied: integer("time_studied").notNull().default(0),
+  },
+  (table) => {
+    return [
+      primaryKey({ columns: [table.userId, table.deckId, table.studyDate] }),
+    ];
+  },
+);

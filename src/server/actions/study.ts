@@ -18,9 +18,10 @@ import {
   STEPS_INTERVAL,
 } from "@/data/constants";
 import { db } from "@/db/db";
-import { cardTable } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import { cardTable, deckProgressTable } from "@/db/schema";
+import { and, AnyColumn, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getTodayDate } from "@/lib/utils";
 
 export const answerCard = async (card: Card, rating: Rating) => {
   const userId = await getCurrentUserId();
@@ -29,10 +30,16 @@ export const answerCard = async (card: Card, rating: Rating) => {
   }
 
   const intervals = getScheduledIntervals(card);
+  let newStudied = 0;
+  let learningStudied = 0;
+  let reviewStudied = 0;
 
   if (card.state === "NEW" || card.state === "LEARN") {
     if (card.state === "NEW") {
+      newStudied = 1;
       card.state = "LEARN";
+    } else {
+      learningStudied = 1;
     }
 
     if (rating === Rating.Again) {
@@ -59,6 +66,8 @@ export const answerCard = async (card: Card, rating: Rating) => {
       card.dueDate = getReviewCardDueDate(intervals.easy);
     }
   } else if (card.state === "REVIEW") {
+    reviewStudied = 1;
+
     if (rating === Rating.Again) {
       card.dueDate = getReviewCardDueDate(intervals.again);
       card.easeFactor = Math.max(
@@ -94,7 +103,58 @@ export const answerCard = async (card: Card, rating: Rating) => {
     return { ok: false, message: "Card does not exist." };
   }
 
+  await updateDeckStats(
+    userId,
+    card.deckId,
+    newStudied,
+    learningStudied,
+    reviewStudied,
+  );
+
   revalidatePath("/learn");
 
-  return { ok: true, message: "Card has been updated." };
+  return { ok: true, message: "Card updated." };
+};
+
+const updateDeckStats = async (
+  userId: string,
+  deckId: number,
+  newStudied: number,
+  learningStudied: number,
+  reviewStudied: number,
+) => {
+  const today = getTodayDate();
+
+  const increment = (column: AnyColumn, value: number) => {
+    return sql`${column} + ${value}`;
+  };
+
+  await db
+    .insert(deckProgressTable)
+    .values({
+      userId,
+      deckId,
+      studyDate: today,
+      newStudied,
+      learningStudied,
+      reviewStudied,
+    })
+    .onConflictDoUpdate({
+      target: [
+        deckProgressTable.userId,
+        deckProgressTable.deckId,
+        deckProgressTable.studyDate,
+      ],
+      set: {
+        newStudied: increment(deckProgressTable.newStudied, newStudied),
+        learningStudied: increment(
+          deckProgressTable.learningStudied,
+          learningStudied,
+        ),
+        reviewStudied: increment(
+          deckProgressTable.reviewStudied,
+          reviewStudied,
+        ),
+      },
+    });
 };
