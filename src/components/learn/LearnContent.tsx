@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { answerCard } from "@/server/actions/study";
 import { QueuedCardRes, Rating } from "@/types/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import AnswerButton from "./AnswerButton";
 import DOMPurify from "isomorphic-dompurify";
@@ -12,17 +12,25 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
   const [showAnswer, setShowAnswer] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
   const queryClient = useQueryClient();
 
   const { deckName, card, intervals, newCount, learningCount, reviewCount } =
     queuedCardRes;
+
+  useEffect(() => {
+    setStartTime(Date.now());
+  }, [card.id]);
 
   const handleShowAnswer = () => {
     setShowAnswer(true);
   };
 
   const handleAnswer = async (rating: Rating) => {
-    const result = await answerCard(card, rating);
+    if (!startTime) return;
+
+    const elapsedTime = Date.now() - startTime;
+    const result = await answerCard(card, rating, elapsedTime);
 
     if (result.ok) {
       setShowAnswer(false);

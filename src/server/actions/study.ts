@@ -14,6 +14,7 @@ import {
   EASY_INTERVAL,
   GRADUATING_INTERVAL,
   INITIAL_EASE_FACTOR,
+  MAX_ANSWER_TIME,
   MINIMUM_EASE_FACTOR,
   STEPS_INTERVAL,
 } from "@/data/constants";
@@ -23,7 +24,11 @@ import { and, AnyColumn, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getTodayDate } from "@/lib/utils";
 
-export const answerCard = async (card: Card, rating: Rating) => {
+export const answerCard = async (
+  card: Card,
+  rating: Rating,
+  timeTaken: number,
+) => {
   const userId = await getCurrentUserId();
   if (!userId) {
     return { ok: false, message: "Unauthorized! Please sign in again." };
@@ -109,6 +114,7 @@ export const answerCard = async (card: Card, rating: Rating) => {
     newStudied,
     learningStudied,
     reviewStudied,
+    Math.min(timeTaken, MAX_ANSWER_TIME),
   );
 
   revalidatePath("/learn");
@@ -122,6 +128,7 @@ const updateDeckStats = async (
   newStudied: number,
   learningStudied: number,
   reviewStudied: number,
+  timeTaken: number,
 ) => {
   const today = getTodayDate();
 
@@ -138,6 +145,7 @@ const updateDeckStats = async (
       newStudied,
       learningStudied,
       reviewStudied,
+      timeStudied: timeTaken,
     })
     .onConflictDoUpdate({
       target: [
@@ -155,6 +163,7 @@ const updateDeckStats = async (
           deckProgressTable.reviewStudied,
           reviewStudied,
         ),
+        timeStudied: increment(deckProgressTable.timeStudied, timeTaken),
       },
     });
 };

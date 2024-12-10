@@ -18,3 +18,6 @@ export const MINIMUM_EASE_FACTOR = 1.3;
 export const EASE_FACTOR_AGAIN_DELTA = -0.2;
 export const EASE_FACTOR_HARD_DELTA = -0.15;
 export const EASE_FACTOR_EASY_DELTA = 0.15;
+
+// Maximum time to record for each answer (milliseconds)
+export const MAX_ANSWER_TIME = 60000;
