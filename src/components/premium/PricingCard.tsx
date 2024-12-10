@@ -6,8 +6,9 @@ import { ReactNode } from "react";
 import { Button } from "../ui/button";
 import { IoCheckmark } from "react-icons/io5";
 import {
+  createCancelSession,
   createCheckoutSession,
-  createCustomerPortalSession,
+  createUpdateSession,
 } from "@/server/actions/stripe";
 import { toast } from "sonner";
 
@@ -29,13 +30,18 @@ const PricingCard = ({
   } = tierInfo;
 
   const handleSubscribe = async () => {
-    if (priceId && currentTier === "FREE") {
-      const result = await createCheckoutSession(priceId);
+    if (priceId) {
+      let result;
+      if (currentTier === "FREE") {
+        result = await createCheckoutSession(priceId);
+      } else {
+        result = await createUpdateSession(priceId);
+      }
       if (result) {
         toast.error(result.error);
       }
     } else {
-      const result = await createCustomerPortalSession();
+      const result = await createCancelSession();
       if (result) {
         toast.error(result.error);
       }
