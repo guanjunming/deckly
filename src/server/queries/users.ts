@@ -5,8 +5,7 @@ import { auth } from "@/auth";
 
 export const getCurrentUserId = async () => {
   const session = await auth();
-
-  return session?.user.id;
+  return session?.user?.id;
 };
 
 export const getUserByEmail = async (email: string) => {

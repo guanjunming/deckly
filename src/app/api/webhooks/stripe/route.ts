@@ -5,7 +5,6 @@ import {
   updateUserSubscription,
 } from "@/server/queries/subscription";
 import { NextRequest } from "next/server";
-
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -14,10 +13,8 @@ export const POST = async (request: NextRequest) => {
   const body = await request.text();
   const signature = request.headers.get("stripe-signature") as string;
 
-  let event;
-
   try {
-    event = stripe.webhooks.constructEvent(
+    const event = stripe.webhooks.constructEvent(
       body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET!,
@@ -25,19 +22,16 @@ export const POST = async (request: NextRequest) => {
 
     switch (event.type) {
       case "customer.subscription.created":
-        console.log("customer.subscription.created");
         await handleCreateSubscription(event.data.object);
       case "customer.subscription.updated":
-        console.log("customer.subscription.updated");
         await handleUpdateSubscription(event.data.object);
         break;
       case "customer.subscription.deleted":
-        console.log("customer.subscription.deleted");
         await handleDeleteSubscription(event.data.object);
         break;
     }
   } catch (error: any) {
-    console.error("Error processing webhook:" + error.message);
+    console.error("Error processing webhook: " + error.message);
     return new Response("Error processing webhook", { status: 400 });
   }
 
@@ -75,7 +69,7 @@ const handleUpdateSubscription = async (subscription: Stripe.Subscription) => {
   const customer = subscription.customer;
   const customerId = typeof customer === "string" ? customer : customer.id;
 
-  return await updateUserSubscription(customerId, { tier });
+  return await updateUserSubscription(customerId, { tier: tier });
 };
 
 const handleDeleteSubscription = async (subscription: Stripe.Subscription) => {

@@ -10,13 +10,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 export const createCheckoutSession = async (priceId: string) => {
   const userId = await getCurrentUserId();
   if (!userId) {
-    // return { ok: false, message: "Unauthorized! Please sign in again." };
-    return;
+    return { error: "Unauthorized! Please sign in again." };
   }
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
-
     line_items: [
       {
         price: priceId,
@@ -38,14 +36,13 @@ export const createCheckoutSession = async (priceId: string) => {
 export const createCustomerPortalSession = async () => {
   const userId = await getCurrentUserId();
   if (!userId) {
-    // return { ok: false, message: "Unauthorized! Please sign in again." };
-    return;
+    return { error: "Unauthorized! Please sign in again." };
   }
 
   const subscription = await getUserSubscription(userId);
 
-  if (subscription?.stripeCustomerId == null) {
-    return;
+  if (!subscription || subscription.stripeCustomerId == null) {
+    return { error: "No existing subscription." };
   }
 
   const portalSession = await stripe.billingPortal.sessions.create({

@@ -1,11 +1,15 @@
-import { auth } from "@/auth";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { IoCheckmark } from "react-icons/io5";
+import PricingCard from "@/components/premium/PricingCard";
+import { FREE, subscriptionTiers } from "@/data/subscriptionTiers";
+import { getUserSubscription } from "@/server/queries/subscription";
+import { getCurrentUserId } from "@/server/queries/users";
+import { redirect } from "next/navigation";
 
 const PremiumPage = async () => {
-  const session = await auth();
-  if (!session) return <div>Not authenticated</div>;
+  const userId = await getCurrentUserId();
+  if (!userId) return redirect("/login");
+
+  const subscription = await getUserSubscription(userId);
+  const currentTier = subscription?.tier || "FREE";
 
   return (
     <div className="w-full py-12 md:py-24 lg:py-32">
@@ -19,84 +23,16 @@ const PremiumPage = async () => {
             cancel anytime.
           </p>
         </div>
-        <div className="mt-10 grid gap-8 md:grid-cols-3 md:gap-12 lg:mx-auto lg:max-w-5xl">
-          <Card className="flex flex-col gap-4 p-6">
-            <div className="text-2xl font-semibold">Basic</div>
-            <div className="flex-grow">
-              <div className="flex flex-wrap items-baseline">
-                <div className="text-4xl font-bold">Free</div>
-              </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>Up to 5 decks</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>50 cards per deck</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>Limited access to Statistics</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4">
-              <Button className="w-full rounded-full">Get started</Button>
-            </div>
-          </Card>
-          <Card className="flex flex-col gap-4 p-6">
-            <div className="text-2xl font-semibold">Standard</div>
-            <div className="flex-grow">
-              <div className="flex flex-wrap items-baseline">
-                <div className="text-4xl font-bold">SGD 4.99</div>
-                <div>/ month</div>
-              </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>Up to 10 decks</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>100 cards per deck</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>Full access to Statistics</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4">
-              <Button className="w-full rounded-full">Current Plan</Button>
-            </div>
-          </Card>
-          <Card className="flex flex-col gap-4 p-6">
-            <div className="text-2xl font-semibold">Premium</div>
-            <div className="flex-grow">
-              <div className="flex flex-wrap items-baseline">
-                <div className="text-4xl font-bold">SGD 9.99</div>
-                <div>/ month</div>
-              </div>
-              <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>Unlimited decks</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>Unlimited cards per deck</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <IoCheckmark className="h-5 w-5" />
-                  <span>Full access to Statistics</span>
-                </div>
-              </div>
-            </div>
-            <div className="mt-4">
-              <Button className="w-full rounded-full">Subscribe</Button>
-            </div>
-          </Card>
+        <div className="mx-auto mt-10 grid gap-8 md:grid-cols-3 lg:max-w-5xl">
+          <PricingCard tierInfo={FREE} currentTier={currentTier} />
+          <PricingCard
+            tierInfo={subscriptionTiers.STANDARD}
+            currentTier={currentTier}
+          />
+          <PricingCard
+            tierInfo={subscriptionTiers.PREMIUM}
+            currentTier={currentTier}
+          />
         </div>
       </div>
     </div>
