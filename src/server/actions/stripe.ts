@@ -42,7 +42,7 @@ export const createCustomerPortalSession = async () => {
 
   const subscription = await getUserSubscription(userId);
 
-  if (!subscription || subscription.stripeCustomerId == null) {
+  if (!subscription) {
     return { error: "No existing subscription." };
   }
 
@@ -62,11 +62,7 @@ export const createCancelSession = async () => {
 
   const subscription = await getUserSubscription(userId);
 
-  if (
-    !subscription ||
-    subscription.stripeCustomerId == null ||
-    subscription.stripeSubscriptionId == null
-  ) {
+  if (!subscription) {
     return { error: "No existing subscription." };
   }
 
@@ -92,12 +88,7 @@ export const createUpdateSession = async (priceId: string) => {
 
   const subscription = await getUserSubscription(userId);
 
-  if (
-    !subscription ||
-    subscription.stripeCustomerId == null ||
-    subscription.stripeSubscriptionId == null ||
-    subscription.stripeSubscriptionItemId == null
-  ) {
+  if (!subscription) {
     return { error: "No existing subscription." };
   }
 

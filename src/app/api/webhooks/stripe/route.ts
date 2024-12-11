@@ -23,6 +23,7 @@ export const POST = async (request: NextRequest) => {
     switch (event.type) {
       case "customer.subscription.created":
         await handleCreateSubscription(event.data.object);
+        break;
       case "customer.subscription.updated":
         await handleUpdateSubscription(event.data.object);
         break;
@@ -45,6 +46,7 @@ const handleCreateSubscription = async (subscription: Stripe.Subscription) => {
   if (!userId || !tier) {
     throw new Error("Invalid subscription tier");
   }
+
   const customer = subscription.customer;
   const customerId = typeof customer === "string" ? customer : customer.id;
 
@@ -58,10 +60,6 @@ const handleCreateSubscription = async (subscription: Stripe.Subscription) => {
 };
 
 const handleUpdateSubscription = async (subscription: Stripe.Subscription) => {
-  if (subscription.status !== "active") {
-    return;
-  }
-
   const tier = getTierByPriceId(subscription.items.data[0].price.id);
   if (!tier) {
     throw new Error("Invalid subscription tier");

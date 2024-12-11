@@ -117,9 +117,9 @@ export const subscriptionTierEnum = pgEnum("subscription_tier", [
 export const userSubscriptionTable = pgTable("user_subscriptions", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id").notNull().unique(),
-  stripeSubscriptionItemId: text("stripe_subscription_item_id"),
-  stripeSubscriptionId: text("stripe_subscription_id"),
-  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionItemId: text("stripe_subscription_item_id").notNull(),
+  stripeSubscriptionId: text("stripe_subscription_id").notNull(),
+  stripeCustomerId: text("stripe_customer_id").notNull(),
   tier: subscriptionTierEnum("tier").notNull(),
   createdAt,
   updatedAt,
