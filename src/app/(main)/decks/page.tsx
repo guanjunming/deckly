@@ -4,6 +4,7 @@ import { getCurrentUserId } from "@/server/queries/users";
 import { redirect } from "next/navigation";
 import CreateDeckButton from "@/components/decks/CreateDeckButton";
 import DeckCard from "@/components/decks/DeckCard";
+import { canCreateDeck } from "@/server/queries/subscription";
 
 const DecksPage = async () => {
   const userId = await getCurrentUserId();
@@ -11,12 +12,14 @@ const DecksPage = async () => {
 
   const decksInfo = await getAllDecksInfo(userId);
 
+  const canCreate = await canCreateDeck(userId);
+
   return (
     <div className="mx-auto flex max-w-[940px] flex-col px-3 py-6">
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-semibold">Your decks</h1>
-          <CreateDeckButton />
+          <CreateDeckButton canCreateDeck={canCreate} />
         </div>
 
         {decksInfo.length > 0 ? (

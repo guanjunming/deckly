@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -27,8 +26,11 @@ import { Button } from "../ui/button";
 import { useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { PiCrownLight } from "react-icons/pi";
 
-const CreateDeckButton = () => {
+const CreateDeckButton = ({ canCreateDeck }: { canCreateDeck: boolean }) => {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof deckSchema>>({
     resolver: zodResolver(deckSchema),
@@ -36,6 +38,14 @@ const CreateDeckButton = () => {
       name: "",
     },
   });
+
+  const onTryCreateDeck = () => {
+    if (!canCreateDeck) {
+      router.push("/premium");
+    } else {
+      setOpen(true);
+    }
+  };
 
   const onSubmit = async (values: z.infer<typeof deckSchema>) => {
     const response = await addDeck(values);
@@ -57,11 +67,15 @@ const CreateDeckButton = () => {
         if (!open) form.reset();
       }}
     >
-      <DialogTrigger asChild>
-        <Button size="lg" className="rounded-full">
-          New Deck
-        </Button>
-      </DialogTrigger>
+      <Button
+        onClick={onTryCreateDeck}
+        size="lg"
+        className="rounded-full [&_svg]:size-6"
+      >
+        {!canCreateDeck && <PiCrownLight />}
+        New Deck
+      </Button>
+
       <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-xl">Create new deck</DialogTitle>

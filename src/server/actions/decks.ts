@@ -9,6 +9,7 @@ import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getActiveDeckId, getDeckById } from "../queries/decks";
 import { redirect } from "next/navigation";
+import { canCreateDeck } from "../queries/subscription";
 
 export const addDeck = async (values: z.infer<typeof deckSchema>) => {
   const userId = await getCurrentUserId();
@@ -17,9 +18,16 @@ export const addDeck = async (values: z.infer<typeof deckSchema>) => {
   }
 
   const { success, data } = deckSchema.safeParse(values);
-
   if (!success) {
     return { ok: false, message: "Invalid fields." };
+  }
+
+  const canAdd = await canCreateDeck(userId);
+  if (!canAdd) {
+    return {
+      ok: false,
+      message: "Deck limit reached! Upgrade to Premium to create more.",
+    };
   }
 
   await db.insert(deckTable).values({ ...data, userId: userId });

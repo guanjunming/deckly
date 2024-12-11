@@ -10,15 +10,18 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/types/types";
 import DOMPurify from "isomorphic-dompurify";
+import { PiCrownLight } from "react-icons/pi";
 
 const CardEditor = ({
   deckId,
   selectedCard,
   onUpdate,
+  canAddCard,
 }: {
   deckId: number | undefined;
   selectedCard: Card | null;
   onUpdate: () => void;
+  canAddCard: boolean;
 }) => {
   const [frontField, setFrontField] = useState("");
   const [backField, setBackField] = useState("");
@@ -36,6 +39,13 @@ const CardEditor = ({
 
   const handleAddClicked = async () => {
     if (!deckId) return;
+
+    if (!canAddCard) {
+      toast.error(
+        "Card limit reached for this deck! Upgrade to Premium to add more.",
+      );
+      return;
+    }
 
     if (frontField === "") {
       toast.error("The front field is empty.");
@@ -114,10 +124,10 @@ const CardEditor = ({
       <div className="mt-2 flex justify-center gap-3 p-3">
         <Button
           size="lg"
-          className="w-[120px] rounded-full"
+          className="w-[120px] rounded-full [&_svg]:size-6"
           onClick={handleAddClicked}
         >
-          Add
+          {!canAddCard && <PiCrownLight />} Add
         </Button>
         <Button
           size="lg"

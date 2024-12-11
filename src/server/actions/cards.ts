@@ -7,6 +7,7 @@ import { eq, and, inArray } from "drizzle-orm";
 import { cardAddSchema, cardSchemaBase } from "@/schemas/cards";
 import { getDeckById } from "../queries/decks";
 import { cardTable } from "@/db/schema";
+import { canAddCard } from "../queries/subscription";
 
 export const addCard = async (values: z.infer<typeof cardAddSchema>) => {
   const userId = await getCurrentUserId();
@@ -22,6 +23,15 @@ export const addCard = async (values: z.infer<typeof cardAddSchema>) => {
   const deck = await getDeckById(data.deckId, userId);
   if (!deck) {
     return { ok: false, message: "User deck not found." };
+  }
+
+  const canAdd = await canAddCard(data.deckId, userId);
+  if (!canAdd) {
+    return {
+      ok: false,
+      message:
+        "Card limit reached for this deck! Upgrade to Premium to add more.",
+    };
   }
 
   await db.insert(cardTable).values({ ...data, userId });

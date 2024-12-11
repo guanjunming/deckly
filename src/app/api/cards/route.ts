@@ -12,10 +12,10 @@ export const GET = async (request: NextRequest) => {
   try {
     const cards = await getCardsByDeckId(+deckId);
     return NextResponse.json(cards);
-  } catch (error) {
-    console.log("Failed to get deck cards: " + JSON.stringify(error));
+  } catch (error: any) {
+    console.error("Error fetching cards: " + error.message);
     return NextResponse.json(
-      { error: "Something went wrong!" },
+      { error: "Error fetching cards" },
       { status: 500 },
     );
   }

@@ -15,9 +15,11 @@ import { Card } from "@/types/types";
 const DeckBrowser = ({
   deckNames,
   currentDeckId,
+  cardLimit,
 }: {
   deckNames: DeckNameOption[];
   currentDeckId: number;
+  cardLimit: number;
 }) => {
   const [selectedDeckId, setSelectedDeckId] = useState(currentDeckId);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -62,6 +64,7 @@ const DeckBrowser = ({
               deckId={selectedDeckId}
               selectedCard={selectedCard}
               onUpdate={onUpdateCard}
+              canAddCard={cardLimit === -1 || cards.length < cardLimit}
             />
           </div>
         </ResizablePanel>

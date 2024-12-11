@@ -2,7 +2,7 @@ import { NEW_PER_DAY, REVIEWS_PER_DAY } from "@/data/constants";
 import { db } from "@/db/db";
 import { cardTable, deckProgressTable } from "@/db/schema";
 import { getTodayDate } from "@/lib/utils";
-import { asc, eq, and, lte, sql } from "drizzle-orm";
+import { asc, eq, and, lte, sql, count } from "drizzle-orm";
 
 export const getCardsByDeckId = async (deckId: number) => {
   const cards = await db
@@ -84,4 +84,13 @@ const gatherNewCards = async (deckId: number) => {
     .limit(remainingNewCards);
 
   return cards;
+};
+
+export const getCardCountInDeck = async (deckId: number) => {
+  const counts = await db
+    .select({ cardCount: count() })
+    .from(cardTable)
+    .where(eq(cardTable.deckId, deckId));
+
+  return counts[0]?.cardCount ?? 0;
 };

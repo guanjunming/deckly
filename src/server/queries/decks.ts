@@ -1,6 +1,6 @@
 import { db } from "@/db/db";
 import { activeDeckTable, deckTable } from "@/db/schema";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, count, eq } from "drizzle-orm";
 import { gatherCards } from "./cards";
 
 export const getAllDecks = async (userId: string) => {
@@ -74,6 +74,15 @@ export const getAllDecksInfo = async (userId: string) => {
   );
 
   return decksInfo;
+};
+
+export const getDeckCount = async (userId: string) => {
+  const counts = await db
+    .select({ deckCount: count() })
+    .from(deckTable)
+    .where(eq(deckTable.userId, userId));
+
+  return counts[0]?.deckCount ?? 0;
 };
 
 export const getActiveDeckId = async (userId: string) => {

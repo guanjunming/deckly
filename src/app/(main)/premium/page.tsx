@@ -1,7 +1,7 @@
 import PricingCard from "@/components/premium/PricingCard";
 import SubscriptionCard from "@/components/premium/SubscriptionCard";
 import { FREE, subscriptionTiers } from "@/data/subscriptionTiers";
-import { getUserSubscription } from "@/server/queries/subscription";
+import { getUserSubscriptionTier } from "@/server/queries/subscription";
 import { getCurrentUserId } from "@/server/queries/users";
 import { redirect } from "next/navigation";
 
@@ -9,8 +9,7 @@ const PremiumPage = async () => {
   const userId = await getCurrentUserId();
   if (!userId) return redirect("/login");
 
-  const subscription = await getUserSubscription(userId);
-  const currentTier = subscription?.tier || "FREE";
+  const currentTier = await getUserSubscriptionTier(userId);
 
   return (
     <div className="mx-auto w-full max-w-screen-lg py-6 md:py-24 lg:py-32">
