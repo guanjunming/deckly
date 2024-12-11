@@ -9,7 +9,7 @@ import SelectDeckCombobox, { type DeckNameOption } from "./SelectDeckCombobox";
 import { useState } from "react";
 import CardEditor from "./CardEditor";
 import CardsTable from "./CardsTable";
-import { useGetDeckCards } from "@/hooks/use-get-deck-cards";
+import { useGetDeckCards } from "@/hooks/useGetDeckCards";
 import { Card } from "@/types/types";
 
 const DeckBrowser = ({

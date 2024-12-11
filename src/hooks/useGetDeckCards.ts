@@ -1,7 +1,6 @@
-import { Card } from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
 
-const fetchCards = async (deckId: number): Promise<Card[]> => {
+const fetchCards = async (deckId: number) => {
   const response = await fetch(`/api/cards?deckId=${deckId}`);
 
   if (!response.ok) {
