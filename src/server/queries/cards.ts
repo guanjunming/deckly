@@ -4,6 +4,15 @@ import { cardTable, deckProgressTable } from "@/db/schema";
 import { getTodayDate } from "@/lib/utils";
 import { asc, eq, and, lte, sql, count } from "drizzle-orm";
 
+export const getAllCards = async (userId: string) => {
+  const cards = await db
+    .select()
+    .from(cardTable)
+    .where(eq(cardTable.userId, userId));
+
+  return cards;
+};
+
 export const getCardsByDeckId = async (deckId: number) => {
   const cards = await db
     .select()
