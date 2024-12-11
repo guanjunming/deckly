@@ -12,9 +12,7 @@ const ChartHeader = ({
     <CardHeader className="pb-2 pt-3">
       <CardTitle className="text-3xl">{children}</CardTitle>
       {description && (
-        <CardDescription className="text-base">
-          The lower the ease, the more frequently a card will appear.
-        </CardDescription>
+        <CardDescription className="text-base">{description}</CardDescription>
       )}
     </CardHeader>
   );

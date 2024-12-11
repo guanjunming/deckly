@@ -7,61 +7,54 @@ import ChartHeader from "./ChartHeader";
 import { appendS } from "@/lib/utils";
 
 const chartConfig = {
-  ease: {
-    label: "Ease",
-    color: "hsl(var(--chart-1))",
+  interval: {
+    label: "Interval",
+    color: "hsl(var(--chart-6))",
   },
 } satisfies ChartConfig;
 
-const makeChartData = (cardEase: Record<number, number>) => {
-  const ease = Object.keys(cardEase).map(parseFloat);
-  const minEase = Math.min(...ease);
-  const maxEase = Math.max(...ease);
+const makeChartData = (cardInterval: Record<number, number>) => {
+  const intervals = Object.keys(cardInterval).map(Number);
+  const minInterval = Math.min(...intervals);
+  const maxInterval = Math.max(...intervals);
 
   const chartData = [];
 
-  for (let ease = Math.floor(minEase * 5) / 5; ease <= maxEase; ease += 0.05) {
-    const easeVal = Math.round(ease * 100) / 100;
+  for (let i = minInterval; i <= maxInterval; i++) {
     chartData.push({
-      ease: easeVal,
-      count: cardEase[easeVal] || 0,
+      interval: i,
+      count: cardInterval[i] || 0,
     });
   }
 
   return chartData;
 };
 
-export const CardEaseChart = ({
+export const CardIntervalChart = ({
   data,
 }: {
-  data: { cardEase: Record<number, number>; averageEase: number };
+  data: { cardInterval: Record<number, number>; averageInterval: number };
 }) => {
-  const chartData = makeChartData(data.cardEase);
+  const chartData = makeChartData(data.cardInterval);
 
   return (
     <Card>
-      <ChartHeader description="The lower the ease, the more frequently a card will appear">
-        Card Ease
+      <ChartHeader description="Delays until review cards are shown again">
+        Review Intervals
       </ChartHeader>
       <CardContent className="py-3 pl-0">
         <ChartContainer config={chartConfig}>
           <BarChart data={chartData}>
             <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="ease"
-              tickMargin={10}
-              tickFormatter={(value) => {
-                return `${Math.round(value * 100)}%`;
-              }}
-            />
+            <XAxis dataKey="interval" tickMargin={10} />
             <YAxis />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="count" fill="var(--color-ease)" />
+            <Bar dataKey="count" fill="var(--color-interval)" />
           </BarChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="justify-center pb-3">
-        <div>{`Average ease: ${data.averageEase}%`}</div>
+        <div>{`Average interval: ${data.averageInterval} ${appendS("day", data.averageInterval)}`}</div>
       </CardFooter>
     </Card>
   );
@@ -77,12 +70,12 @@ const CustomTooltip = ({
   label?: number;
 }) => {
   if (active && payload && payload.length) {
-    const ease = payload[0].payload.ease;
+    const interval = payload[0].payload.interval;
     const count = payload[0].value;
 
     return (
       <div className="rounded border bg-card p-2 shadow">
-        <p>{`${count} ${appendS("card", count)} with ${Math.round(ease * 100)}% ease`}</p>
+        <p>{`${count} ${appendS("card", count)} with a ${interval} day interval`}</p>
       </div>
     );
   }

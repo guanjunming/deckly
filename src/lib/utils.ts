@@ -44,3 +44,7 @@ export const formatTime = (seconds: number) => {
 export const getTodayDate = () => {
   return new Date().toISOString().split("T")[0];
 };
+
+export const appendS = (text: string, value: number) => {
+  return text + (value === 1 ? "" : "s");
+};
