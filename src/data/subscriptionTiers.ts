@@ -16,8 +16,8 @@ export const FREE = {
   tier: "FREE",
   name: "Basic",
   price: 0,
-  maxDecks: 2,
-  maxCardsPerDeck: 10,
+  maxDecks: 5,
+  maxCardsPerDeck: 50,
   canAccessStatistics: false,
 };
 
@@ -26,8 +26,8 @@ export const subscriptionTiers = {
     tier: "STANDARD",
     name: "Standard",
     price: 4.99,
-    maxDecks: 5,
-    maxCardsPerDeck: 20,
+    maxDecks: 20,
+    maxCardsPerDeck: 200,
     canAccessStatistics: true,
     priceId: process.env.STRIPE_STANDARD_PLAN_PRICE_ID,
   },
