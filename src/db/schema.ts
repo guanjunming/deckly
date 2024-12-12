@@ -109,6 +109,21 @@ export const deckProgressTable = pgTable(
   },
 );
 
+export const reviewLogTable = pgTable("review_logs", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => userTable.id),
+  cardId: bigint("card_id", { mode: "number" }).notNull(),
+  deckId: bigint("deck_id", { mode: "number" }).notNull(),
+  rating: integer("rating").notNull(),
+  state: cardStateEnum("state").notNull(),
+  interval: integer("interval").notNull(),
+  easeFactor: real("ease_factor").notNull(),
+  timeTaken: integer("time_taken").notNull(),
+  createdAt,
+});
+
 export const subscriptionTierEnum = pgEnum("subscription_tier", [
   "STANDARD",
   "PREMIUM",

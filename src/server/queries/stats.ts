@@ -2,7 +2,7 @@ import { db } from "@/db/db";
 import { getAllCards } from "./cards";
 import { deckProgressTable } from "@/db/schema";
 import { getTodayDate } from "@/lib/utils";
-import { and, eq, sql, sum } from "drizzle-orm";
+import { and, eq, sum } from "drizzle-orm";
 
 export const getAllProgressToday = async (userId: string) => {
   const today = getTodayDate();

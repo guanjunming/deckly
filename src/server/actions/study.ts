@@ -19,7 +19,7 @@ import {
   STEPS_INTERVAL,
 } from "@/data/constants";
 import { db } from "@/db/db";
-import { cardTable, deckProgressTable } from "@/db/schema";
+import { cardTable, deckProgressTable, reviewLogTable } from "@/db/schema";
 import { and, AnyColumn, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getTodayDate } from "@/lib/utils";
@@ -38,6 +38,8 @@ export const answerCard = async (
   let newStudied = 0;
   let learningStudied = 0;
   let reviewStudied = 0;
+  const lastState = card.state;
+  timeTaken = Math.min(timeTaken, MAX_ANSWER_TIME);
 
   if (card.state === "NEW" || card.state === "LEARN") {
     if (card.state === "NEW") {
@@ -114,7 +116,18 @@ export const answerCard = async (
     newStudied,
     learningStudied,
     reviewStudied,
-    Math.min(timeTaken, MAX_ANSWER_TIME),
+    timeTaken,
+  );
+
+  await addReviewLog(
+    userId,
+    card.id,
+    card.deckId,
+    rating,
+    lastState,
+    card.interval,
+    card.easeFactor,
+    timeTaken,
   );
 
   revalidatePath("/learn");
@@ -166,4 +179,26 @@ const updateDeckStats = async (
         timeStudied: increment(deckProgressTable.timeStudied, timeTaken),
       },
     });
+};
+
+const addReviewLog = async (
+  userId: string,
+  cardId: number,
+  deckId: number,
+  rating: number,
+  state: "NEW" | "LEARN" | "REVIEW",
+  interval: number,
+  easeFactor: number,
+  timeTaken: number,
+) => {
+  await db.insert(reviewLogTable).values({
+    userId,
+    cardId,
+    deckId,
+    rating,
+    state,
+    interval,
+    easeFactor,
+    timeTaken,
+  });
 };
