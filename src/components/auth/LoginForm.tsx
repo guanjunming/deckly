@@ -101,7 +101,7 @@ const LoginForm = () => {
                 size="lg"
                 disabled={form.formState.isSubmitting}
                 type="submit"
-                className="mt-2 w-full rounded-full"
+                className="mt-2 w-full rounded-full disabled:opacity-100"
               >
                 {form.formState.isSubmitting ? (
                   <PulseLoader
