@@ -5,6 +5,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import ChartHeader from "./ChartHeader";
 import { appendS } from "@/lib/utils";
+import { AllTierType } from "@/data/subscriptionTiers";
+import ChartContentWrapper from "./ChartContentWrapper";
 
 const chartConfig = {
   interval: {
@@ -32,30 +34,37 @@ const makeChartData = (cardInterval: Record<number, number>) => {
 
 export const CardIntervalChart = ({
   data,
+  subscriptionTier,
 }: {
   data: { cardInterval: Record<number, number>; averageInterval: number };
+  subscriptionTier: AllTierType;
 }) => {
   const chartData = makeChartData(data.cardInterval);
 
   return (
-    <Card>
+    <Card className="flex flex-col">
       <ChartHeader description="Delays until review cards are shown again">
         Review Intervals
       </ChartHeader>
-      <CardContent className="py-3 pl-0">
-        <ChartContainer config={chartConfig}>
-          <BarChart data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="interval" tickMargin={10} />
-            <YAxis />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="count" fill="var(--color-interval)" />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="justify-center pb-3">
-        <div>{`Average interval: ${data.averageInterval} ${appendS("day", data.averageInterval)}`}</div>
-      </CardFooter>
+      <ChartContentWrapper
+        subscriptionTier={subscriptionTier}
+        hasData={chartData.length > 0}
+      >
+        <CardContent className="py-3 pl-0">
+          <ChartContainer config={chartConfig}>
+            <BarChart data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis dataKey="interval" tickMargin={10} />
+              <YAxis />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="count" fill="var(--color-interval)" />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+        <CardFooter className="justify-center pb-3">
+          <div>{`Average interval: ${data.averageInterval} ${appendS("day", data.averageInterval)}`}</div>
+        </CardFooter>
+      </ChartContentWrapper>
     </Card>
   );
 };

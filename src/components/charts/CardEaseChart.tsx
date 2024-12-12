@@ -5,6 +5,8 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import ChartHeader from "./ChartHeader";
 import { appendS } from "@/lib/utils";
+import ChartContentWrapper from "./ChartContentWrapper";
+import { AllTierType } from "@/data/subscriptionTiers";
 
 const chartConfig = {
   ease: {
@@ -33,36 +35,44 @@ const makeChartData = (cardEase: Record<number, number>) => {
 
 export const CardEaseChart = ({
   data,
+  subscriptionTier,
 }: {
   data: { cardEase: Record<number, number>; averageEase: number };
+  subscriptionTier: AllTierType;
 }) => {
   const chartData = makeChartData(data.cardEase);
 
   return (
-    <Card>
+    <Card className="flex flex-col">
       <ChartHeader description="The lower the ease, the more frequently a card will appear">
         Card Ease
       </ChartHeader>
-      <CardContent className="py-3 pl-0">
-        <ChartContainer config={chartConfig}>
-          <BarChart data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="ease"
-              tickMargin={10}
-              tickFormatter={(value) => {
-                return `${Math.round(value * 100)}%`;
-              }}
-            />
-            <YAxis />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="count" fill="var(--color-ease)" />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="justify-center pb-3">
-        <div>{`Average ease: ${data.averageEase}%`}</div>
-      </CardFooter>
+
+      <ChartContentWrapper
+        subscriptionTier={subscriptionTier}
+        hasData={chartData.length > 0}
+      >
+        <CardContent className="py-3 pl-0">
+          <ChartContainer config={chartConfig}>
+            <BarChart data={chartData}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="ease"
+                tickMargin={10}
+                tickFormatter={(value) => {
+                  return `${Math.round(value * 100)}%`;
+                }}
+              />
+              <YAxis />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="count" fill="var(--color-ease)" />
+            </BarChart>
+          </ChartContainer>
+        </CardContent>
+        <CardFooter className="justify-center pb-3">
+          <div>{`Average ease: ${data.averageEase}%`}</div>
+        </CardFooter>
+      </ChartContentWrapper>
     </Card>
   );
 };

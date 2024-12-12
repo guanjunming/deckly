@@ -14,24 +14,35 @@ export const createCheckoutSession = async (priceId: string) => {
     return { error: "Unauthorized! Please sign in again." };
   }
 
-  const session = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    line_items: [
-      {
-        price: priceId,
-        quantity: 1,
-      },
-    ],
-    subscription_data: {
-      metadata: {
-        userId,
-      },
-    },
-    success_url: returnUrl,
-    cancel_url: returnUrl,
-  });
+  let sessionUrl;
 
-  redirect(session.url!);
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      line_items: [
+        {
+          price: priceId,
+          quantity: 1,
+        },
+      ],
+      subscription_data: {
+        metadata: {
+          userId,
+        },
+      },
+      success_url: returnUrl,
+      cancel_url: returnUrl,
+    });
+
+    sessionUrl = session.url;
+  } catch (error: any) {
+    console.error(error.message);
+    return { error: "Failed to create checkout session." };
+  }
+
+  if (sessionUrl) {
+    redirect(sessionUrl);
+  }
 };
 
 export const createCustomerPortalSession = async () => {
@@ -46,12 +57,23 @@ export const createCustomerPortalSession = async () => {
     return { error: "No existing subscription." };
   }
 
-  const portalSession = await stripe.billingPortal.sessions.create({
-    customer: subscription.stripeCustomerId,
-    return_url: returnUrl,
-  });
+  let portalUrl;
 
-  redirect(portalSession.url);
+  try {
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: subscription.stripeCustomerId,
+      return_url: returnUrl,
+    });
+
+    portalUrl = portalSession.url;
+  } catch (error: any) {
+    console.error(error.message);
+    return { error: "No existing subscription." };
+  }
+
+  if (portalUrl) {
+    redirect(portalUrl);
+  }
 };
 
 export const createCancelSession = async () => {
@@ -66,18 +88,29 @@ export const createCancelSession = async () => {
     return { error: "No existing subscription." };
   }
 
-  const portalSession = await stripe.billingPortal.sessions.create({
-    customer: subscription.stripeCustomerId,
-    return_url: returnUrl,
-    flow_data: {
-      type: "subscription_cancel",
-      subscription_cancel: {
-        subscription: subscription.stripeSubscriptionId,
-      },
-    },
-  });
+  let portalUrl;
 
-  redirect(portalSession.url);
+  try {
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: subscription.stripeCustomerId,
+      return_url: returnUrl,
+      flow_data: {
+        type: "subscription_cancel",
+        subscription_cancel: {
+          subscription: subscription.stripeSubscriptionId,
+        },
+      },
+    });
+
+    portalUrl = portalSession.url;
+  } catch (error: any) {
+    console.error(error.message);
+    return { error: "No existing subscription." };
+  }
+
+  if (portalUrl) {
+    redirect(portalUrl);
+  }
 };
 
 export const createUpdateSession = async (priceId: string) => {
@@ -92,23 +125,34 @@ export const createUpdateSession = async (priceId: string) => {
     return { error: "No existing subscription." };
   }
 
-  const portalSession = await stripe.billingPortal.sessions.create({
-    customer: subscription.stripeCustomerId,
-    return_url: returnUrl,
-    flow_data: {
-      type: "subscription_update_confirm",
-      subscription_update_confirm: {
-        subscription: subscription.stripeSubscriptionId,
-        items: [
-          {
-            id: subscription.stripeSubscriptionItemId,
-            price: priceId,
-            quantity: 1,
-          },
-        ],
-      },
-    },
-  });
+  let portalUrl;
 
-  redirect(portalSession.url);
+  try {
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: subscription.stripeCustomerId,
+      return_url: returnUrl,
+      flow_data: {
+        type: "subscription_update_confirm",
+        subscription_update_confirm: {
+          subscription: subscription.stripeSubscriptionId,
+          items: [
+            {
+              id: subscription.stripeSubscriptionItemId,
+              price: priceId,
+              quantity: 1,
+            },
+          ],
+        },
+      },
+    });
+
+    portalUrl = portalSession.url;
+  } catch (error: any) {
+    console.error(error.message);
+    return { error: "No existing subscription." };
+  }
+
+  if (portalUrl) {
+    redirect(portalUrl);
+  }
 };

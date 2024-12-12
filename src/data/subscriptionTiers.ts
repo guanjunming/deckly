@@ -1,5 +1,7 @@
 export type TierType = keyof typeof subscriptionTiers;
 
+export type AllTierType = TierType | "FREE";
+
 export type TierInfo = {
   tier: string;
   name: string;

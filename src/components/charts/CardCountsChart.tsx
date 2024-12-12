@@ -9,6 +9,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import ChartHeader from "./ChartHeader";
+import { AllTierType } from "@/data/subscriptionTiers";
+import ChartContentWrapper from "./ChartContentWrapper";
 
 const chartConfig = {
   count: {
@@ -46,8 +48,10 @@ const makeChartData = (cardCount: Record<string, number>) => {
 
 export const CardCountsChart = ({
   data,
+  subscriptionTier,
 }: {
   data: { cardCount: Record<string, number>; totalCount: number };
+  subscriptionTier: AllTierType;
 }) => {
   const chartData = makeChartData(data.cardCount);
 
@@ -62,41 +66,46 @@ export const CardCountsChart = ({
   return (
     <Card className="flex flex-col">
       <ChartHeader>Card Counts</ChartHeader>
-      <CardContent className="flex flex-col justify-center p-3 pt-0">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-square max-h-[250px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+      <ChartContentWrapper
+        subscriptionTier={subscriptionTier}
+        hasData={totalCount > 0}
+      >
+        <CardContent className="flex flex-col justify-center p-3 pt-0">
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-square max-h-[250px]"
+          >
+            <PieChart>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
+              <Pie data={chartData} dataKey="count" nameKey="state" />
+            </PieChart>
+          </ChartContainer>
+          <div className="flex flex-col items-center justify-center gap-1">
+            <LegendContent
+              color="#6baed6"
+              label="New"
+              count={newCount}
+              percent={newPercent}
             />
-            <Pie data={chartData} dataKey="count" nameKey="state" />
-          </PieChart>
-        </ChartContainer>
-        <div className="flex flex-col items-center justify-center gap-1">
-          <LegendContent
-            color="#6baed6"
-            label="New"
-            count={newCount}
-            percent={newPercent}
-          />
-          <LegendContent
-            color="#fd8d3c"
-            label="Learning"
-            count={learnCount}
-            percent={learnPercent}
-          />
-          <LegendContent
-            color="#74c476"
-            label="Review"
-            count={reviewCount}
-            percent={reviewPercent}
-          />
-          <LegendContent label="Total" count={totalCount} />
-        </div>
-      </CardContent>
+            <LegendContent
+              color="#fd8d3c"
+              label="Learning"
+              count={learnCount}
+              percent={learnPercent}
+            />
+            <LegendContent
+              color="#74c476"
+              label="Review"
+              count={reviewCount}
+              percent={reviewPercent}
+            />
+            <LegendContent label="Total" count={totalCount} />
+          </div>
+        </CardContent>
+      </ChartContentWrapper>
     </Card>
   );
 };
@@ -127,7 +136,8 @@ const LegendContent = ({
       </div>
       <div className="w-[60px] truncate text-right">{count}</div>
       <div className="ml-16 w-[60px] truncate text-right">
-        {percent !== undefined && `${percent.toFixed(2)}%`}
+        {percent !== undefined &&
+          `${percent.toFixed(percent % 1 === 0 ? 0 : 2)}%`}
       </div>
     </div>
   );
