@@ -50,11 +50,17 @@ const LearnContent = ({ queuedCardRes }: { queuedCardRes: QueuedCardRes }) => {
         <div className="mb-4 text-3xl font-semibold">{deckName}</div>
 
         <div className="flex flex-grow flex-col overflow-auto py-3 text-center text-xl">
-          <div dangerouslySetInnerHTML={{ __html: cleanFront }} />
+          <div
+            className="whitespace-pre-wrap"
+            dangerouslySetInnerHTML={{ __html: cleanFront }}
+          />
           {showAnswer && (
             <>
               <Separator className="my-5" />
-              <div dangerouslySetInnerHTML={{ __html: cleanBack }} />
+              <div
+                className="whitespace-pre-wrap"
+                dangerouslySetInnerHTML={{ __html: cleanBack }}
+              />
             </>
           )}
         </div>

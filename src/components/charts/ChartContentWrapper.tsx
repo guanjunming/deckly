@@ -1,5 +1,6 @@
 import { AllTierType } from "@/data/subscriptionTiers";
 import { ReactNode } from "react";
+import { PiCrownLight } from "react-icons/pi";
 
 const ChartContentWrapper = ({
   subscriptionTier,
@@ -22,7 +23,10 @@ const ChartContentWrapper = ({
         )
       ) : (
         <div className="grid h-full place-content-center text-muted-foreground">
-          Upgrade to Premium to get full access
+          <div className="flex items-center gap-1">
+            <PiCrownLight className="h-5 w-5" /> Upgrade to Premium to get full
+            access
+          </div>
         </div>
       )}
     </div>
