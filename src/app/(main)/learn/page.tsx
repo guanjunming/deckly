@@ -26,7 +26,11 @@ const LearnPage = async () => {
     );
   }
 
-  return <LearnContent queuedCardRes={queuedCardRes} />;
+  return (
+    <div className="bg-card">
+      <LearnContent queuedCardRes={queuedCardRes} />
+    </div>
+  );
 };
 
 export default LearnPage;

@@ -72,13 +72,6 @@ const SidebarFooter = ({ session }: DropdownMenuProps) => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="cursor-pointer px-1.5 text-base">
-            <Link href="/settings">
-              <div className="flex w-full items-center gap-2">
-                <Settings className="h-5 w-5" /> Settings
-              </div>
-            </Link>
-          </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer px-1.5 text-base"
             onClick={() => logout()}

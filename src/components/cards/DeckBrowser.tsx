@@ -38,7 +38,7 @@ const DeckBrowser = ({
   };
 
   return (
-    <div className="h-screen">
+    <div className="h-screen bg-card">
       <ResizablePanelGroup direction="horizontal" autoSaveId="browser-layout">
         <ResizablePanel defaultSize={50}>
           <div className="flex h-full flex-col p-3">

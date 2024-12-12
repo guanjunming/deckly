@@ -11,7 +11,7 @@ import ChartContentWrapper from "./ChartContentWrapper";
 const chartConfig = {
   interval: {
     label: "Interval",
-    color: "hsl(var(--chart-6))",
+    color: "#529ac7",
   },
 } satisfies ChartConfig;
 
