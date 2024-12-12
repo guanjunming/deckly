@@ -8,8 +8,7 @@ import {
 } from "@/data/constants";
 import { Card } from "@/types/types";
 import { startOfDay, addSeconds } from "date-fns";
-
-const SECS_IN_DAY = 86400;
+import { secondsInDay } from "date-fns/constants";
 
 export const getLearningIntervals = (learningStep: number) => {
   // again
@@ -24,13 +23,13 @@ export const getLearningIntervals = (learningStep: number) => {
   }
 
   // good
-  let goodInterval = GRADUATING_INTERVAL * SECS_IN_DAY;
+  let goodInterval = GRADUATING_INTERVAL * secondsInDay;
   if (learningStep < STEPS_INTERVAL.length - 1) {
     goodInterval = STEPS_INTERVAL[learningStep + 1];
   }
 
   // easy
-  const easyInterval = EASY_INTERVAL * SECS_IN_DAY;
+  const easyInterval = EASY_INTERVAL * secondsInDay;
 
   return {
     again: againInterval,
@@ -75,10 +74,10 @@ export const getReviewIntervals = (
   );
 
   return {
-    again: againInterval * SECS_IN_DAY,
-    hard: hardInterval * SECS_IN_DAY,
-    good: goodInterval * SECS_IN_DAY,
-    easy: easyInterval * SECS_IN_DAY,
+    again: againInterval * secondsInDay,
+    hard: hardInterval * secondsInDay,
+    good: goodInterval * secondsInDay,
+    easy: easyInterval * secondsInDay,
   };
 };
 

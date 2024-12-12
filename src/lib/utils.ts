@@ -1,6 +1,23 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { format } from "date-fns";
+import {
+  format,
+  millisecondsToHours,
+  millisecondsToMinutes,
+  millisecondsToSeconds,
+  secondsToHours,
+  secondsToMinutes,
+} from "date-fns";
+import {
+  millisecondsInHour,
+  millisecondsInMinute,
+  millisecondsInSecond,
+  secondsInDay,
+  secondsInHour,
+  secondsInMinute,
+  secondsInMonth,
+  secondsInYear,
+} from "date-fns/constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,19 +32,13 @@ export const formatDate = (date: Date) => {
 };
 
 export const formatTime = (seconds: number) => {
-  const secondsInMinute = 60;
-  const secondsInHour = 60 * 60;
-  const secondsInDay = 24 * 60 * 60;
-  const secondsInMonth = 30 * 24 * 60 * 60;
-  const secondsInYear = 365 * 24 * 60 * 60;
-
   if (seconds < secondsInMinute) {
     return `<${Math.ceil(seconds)}s`;
   } else if (seconds < secondsInHour) {
-    const minutes = seconds / secondsInMinute;
+    const minutes = secondsToMinutes(seconds);
     return `${minutes < 20 ? "<" : ""}${Math.ceil(minutes)}m`;
   } else if (seconds < secondsInDay) {
-    const hours = seconds / secondsInHour;
+    const hours = secondsToHours(seconds);
     return `${hours.toFixed(hours % 1 === 0 ? 0 : 1)}h`;
   } else if (seconds < secondsInMonth) {
     const days = seconds / secondsInDay;
@@ -45,16 +56,12 @@ export const formatTimeForStats = (
   milliseconds: number,
   short: boolean = false,
 ) => {
-  const seconds = milliseconds / 1000;
-  const minutes = seconds / 60;
-  const hours = minutes / 60;
-
-  if (seconds < 60) {
-    return `${seconds.toFixed(2)} ${short ? "s" : "seconds"}`;
-  } else if (minutes < 60) {
-    return `${minutes.toFixed(2)} ${short ? "m" : "minutes"}`;
+  if (milliseconds < millisecondsInMinute) {
+    return `${millisecondsToSeconds(milliseconds).toFixed(2)} ${short ? "s" : "seconds"}`;
+  } else if (milliseconds < millisecondsInHour) {
+    return `${millisecondsToMinutes(milliseconds).toFixed(2)} ${short ? "m" : "minutes"}`;
   } else {
-    return `${hours.toFixed(2)} ${short ? "h" : "hours"}`;
+    return `${millisecondsToHours(milliseconds).toFixed(2)} ${short ? "h" : "hours"}`;
   }
 };
 
