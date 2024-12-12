@@ -23,7 +23,6 @@ import { cardTable, deckProgressTable, reviewLogTable } from "@/db/schema";
 import { and, AnyColumn, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getTodayDate } from "@/lib/utils";
-import { secondsInDay } from "date-fns/constants";
 
 export const answerCard = async (
   card: Card,
@@ -77,24 +76,20 @@ export const answerCard = async (
     reviewStudied = 1;
 
     if (rating === Rating.Again) {
-      card.interval = intervals.again / secondsInDay;
       card.dueDate = getReviewCardDueDate(intervals.again);
       card.easeFactor = Math.max(
         card.easeFactor + EASE_FACTOR_AGAIN_DELTA,
         MINIMUM_EASE_FACTOR,
       );
     } else if (rating === Rating.Hard) {
-      card.interval = intervals.hard / secondsInDay;
       card.dueDate = getReviewCardDueDate(intervals.hard);
       card.easeFactor = Math.max(
         card.easeFactor + EASE_FACTOR_HARD_DELTA,
         MINIMUM_EASE_FACTOR,
       );
     } else if (rating === Rating.Good) {
-      card.interval = intervals.good / secondsInDay;
       card.dueDate = getReviewCardDueDate(intervals.good);
     } else if (rating === Rating.Easy) {
-      card.interval = intervals.easy / secondsInDay;
       card.dueDate = getReviewCardDueDate(intervals.easy);
       card.easeFactor = card.easeFactor + EASE_FACTOR_EASY_DELTA;
     }

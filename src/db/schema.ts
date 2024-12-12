@@ -12,7 +12,6 @@ import {
   integer,
   real,
   date,
-  smallint,
 } from "drizzle-orm/pg-core";
 
 const createdAt = timestamp("created_at").notNull().defaultNow();
@@ -117,7 +116,7 @@ export const reviewLogTable = pgTable("review_logs", {
     .references(() => userTable.id),
   cardId: bigint("card_id", { mode: "number" }).notNull(),
   deckId: bigint("deck_id", { mode: "number" }).notNull(),
-  rating: smallint("rating").notNull(),
+  rating: integer("rating").notNull(),
   state: cardStateEnum("state").notNull(),
   interval: integer("interval").notNull(),
   easeFactor: real("ease_factor").notNull(),
