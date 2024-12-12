@@ -1,6 +1,7 @@
 import { CardCountsChart } from "@/components/charts/CardCountsChart";
 import { CardEaseChart } from "@/components/charts/CardEaseChart";
 import { CardIntervalChart } from "@/components/charts/CardIntervalChart";
+import TodayProgressCard from "@/components/charts/TodayProgressCard";
 import { getStatsData } from "@/server/queries/stats";
 import { getUserSubscriptionTier } from "@/server/queries/subscription";
 import { getCurrentUserId } from "@/server/queries/users";
@@ -18,6 +19,7 @@ const StatsPage = async () => {
   return (
     <div className="p-6">
       <div className="grid w-full gap-x-4 gap-y-4 xl:grid-cols-2 2xl:grid-cols-3">
+        <TodayProgressCard progress={statsData.todayProgress} />
         <CardCountsChart
           data={statsData.cardCountData}
           subscriptionTier={currentTier}

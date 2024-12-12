@@ -1,6 +1,40 @@
+import { db } from "@/db/db";
 import { getAllCards } from "./cards";
+import { deckProgressTable } from "@/db/schema";
+import { getTodayDate } from "@/lib/utils";
+import { and, eq, sql, sum } from "drizzle-orm";
+
+export const getAllProgressToday = async (userId: string) => {
+  const today = getTodayDate();
+
+  const result = await db
+    .select({
+      totalNew: sum(deckProgressTable.newStudied),
+      totalLearning: sum(deckProgressTable.learningStudied),
+      totalReview: sum(deckProgressTable.reviewStudied),
+      totalTime: sum(deckProgressTable.timeStudied),
+    })
+    .from(deckProgressTable)
+    .where(
+      and(
+        eq(deckProgressTable.userId, userId),
+        eq(deckProgressTable.studyDate, today),
+      ),
+    );
+
+  const progress = result[0];
+
+  return {
+    totalNew: Number(progress.totalNew),
+    totalLearning: Number(progress.totalLearning),
+    totalReview: Number(progress.totalReview),
+    totalTime: Number(progress.totalTime),
+  };
+};
 
 export const getStatsData = async (userId: string) => {
+  const todayProgress = await getAllProgressToday(userId);
+
   const cards = await getAllCards(userId);
 
   const cardCount: Record<string, number> = {};
@@ -34,16 +68,17 @@ export const getStatsData = async (userId: string) => {
   const averageInterval = intervalCount > 0 ? totalInterval / intervalCount : 0;
 
   return {
+    todayProgress,
     cardCountData: {
-      cardCount: cardCount,
+      cardCount,
       totalCount: cards.length,
     },
     cardEaseData: {
-      cardEase: cardEase,
+      cardEase,
       averageEase: Math.round(averageEase * 100),
     },
     cardIntervalData: {
-      cardInterval: cardInterval,
+      cardInterval,
       averageInterval: Math.floor(averageInterval),
     },
   };

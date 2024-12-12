@@ -22,10 +22,10 @@ export const formatTime = (seconds: number) => {
   const secondsInYear = 365 * 24 * 60 * 60;
 
   if (seconds < secondsInMinute) {
-    return `<${Math.round(seconds)}s`;
+    return `<${Math.ceil(seconds)}s`;
   } else if (seconds < secondsInHour) {
     const minutes = seconds / secondsInMinute;
-    return `${minutes < 20 ? "<" : ""}${Math.round(minutes)}m`;
+    return `${minutes < 20 ? "<" : ""}${Math.ceil(minutes)}m`;
   } else if (seconds < secondsInDay) {
     const hours = seconds / secondsInHour;
     return `${hours.toFixed(hours % 1 === 0 ? 0 : 1)}h`;
@@ -38,6 +38,23 @@ export const formatTime = (seconds: number) => {
   } else {
     const years = seconds / secondsInYear;
     return `${years.toFixed(years % 1 === 0 ? 0 : 1)}y`;
+  }
+};
+
+export const formatTimeForStats = (
+  milliseconds: number,
+  short: boolean = false,
+) => {
+  const seconds = milliseconds / 1000;
+  const minutes = seconds / 60;
+  const hours = minutes / 60;
+
+  if (seconds < 60) {
+    return `${seconds.toFixed(2)} ${short ? "s" : "seconds"}`;
+  } else if (minutes < 60) {
+    return `${minutes.toFixed(2)} ${short ? "m" : "minutes"}`;
+  } else {
+    return `${hours.toFixed(2)} ${short ? "h" : "hours"}`;
   }
 };
 
