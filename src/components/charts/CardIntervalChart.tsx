@@ -54,10 +54,10 @@ export const CardIntervalChart = ({
           <ChartContainer config={chartConfig}>
             <BarChart data={chartData}>
               <CartesianGrid vertical={false} />
-              <XAxis dataKey="interval" tickMargin={10} />
+              <XAxis dataKey="interval" tickMargin={5} />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill="var(--color-interval)" />
+              <Bar dataKey="count" fill="var(--color-interval)" radius={2} />
             </BarChart>
           </ChartContainer>
         </CardContent>

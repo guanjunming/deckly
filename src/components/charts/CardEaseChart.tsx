@@ -11,7 +11,7 @@ import { AllTierType } from "@/data/subscriptionTiers";
 const chartConfig = {
   ease: {
     label: "Ease",
-    color: "hsl(var(--chart-1))",
+    color: "#8fcf69",
   },
 } satisfies ChartConfig;
 
@@ -22,8 +22,8 @@ const makeChartData = (cardEase: Record<number, number>) => {
 
   const chartData = [];
 
-  for (let ease = Math.floor(minEase * 5) / 5; ease <= maxEase; ease += 0.05) {
-    const easeVal = Math.round(ease * 100) / 100;
+  for (let i = Math.floor(minEase * 5) / 5; i <= maxEase; i += 0.05) {
+    const easeVal = Math.round(i * 100) / 100;
     chartData.push({
       ease: easeVal,
       count: cardEase[easeVal] || 0,
@@ -58,14 +58,14 @@ export const CardEaseChart = ({
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="ease"
-                tickMargin={10}
+                tickMargin={5}
                 tickFormatter={(value) => {
                   return `${Math.round(value * 100)}%`;
                 }}
               />
               <YAxis />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" fill="var(--color-ease)" />
+              <Bar dataKey="count" fill="var(--color-ease)" radius={2} />
             </BarChart>
           </ChartContainer>
         </CardContent>

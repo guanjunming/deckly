@@ -12,6 +12,7 @@ import {
   integer,
   real,
   date,
+  smallint,
 } from "drizzle-orm/pg-core";
 
 const createdAt = timestamp("created_at").notNull().defaultNow();
@@ -116,7 +117,7 @@ export const reviewLogTable = pgTable("review_logs", {
     .references(() => userTable.id),
   cardId: bigint("card_id", { mode: "number" }).notNull(),
   deckId: bigint("deck_id", { mode: "number" }).notNull(),
-  rating: integer("rating").notNull(),
+  rating: smallint("rating").notNull(),
   state: cardStateEnum("state").notNull(),
   interval: integer("interval").notNull(),
   easeFactor: real("ease_factor").notNull(),
@@ -131,7 +132,10 @@ export const subscriptionTierEnum = pgEnum("subscription_tier", [
 
 export const userSubscriptionTable = pgTable("user_subscriptions", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: uuid("user_id").notNull().unique(),
+  userId: uuid("user_id")
+    .notNull()
+    .unique()
+    .references(() => userTable.id),
   stripeSubscriptionItemId: text("stripe_subscription_item_id").notNull(),
   stripeSubscriptionId: text("stripe_subscription_id").notNull(),
   stripeCustomerId: text("stripe_customer_id").notNull(),

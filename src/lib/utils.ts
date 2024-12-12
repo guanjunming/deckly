@@ -24,6 +24,10 @@ export const formatDate = (date: Date) => {
   return format(date, "yyyy-MM-dd");
 };
 
+export const formatDecimal = (value: number, precision: number = 2) => {
+  return value % 1 === 0 ? value.toFixed(0) : value.toFixed(precision);
+};
+
 export const formatTime = (seconds: number) => {
   if (seconds < secondsInMinute) {
     return `<${Math.ceil(seconds)}s`;
@@ -32,16 +36,16 @@ export const formatTime = (seconds: number) => {
     return `${minutes < 20 ? "<" : ""}${Math.ceil(minutes)}m`;
   } else if (seconds < secondsInDay) {
     const hours = seconds / secondsInHour;
-    return `${hours.toFixed(hours % 1 === 0 ? 0 : 1)}h`;
+    return `${formatDecimal(hours, 1)}h`;
   } else if (seconds < secondsInMonth) {
     const days = seconds / secondsInDay;
-    return `${days.toFixed(days % 1 === 0 ? 0 : 1)}d`;
+    return `${formatDecimal(days, 1)}d`;
   } else if (seconds < secondsInYear) {
     const months = seconds / secondsInMonth;
-    return `${months.toFixed(months % 1 === 0 ? 0 : 1)}mo`;
+    return `${formatDecimal(months, 1)}mo`;
   } else {
     const years = seconds / secondsInYear;
-    return `${years.toFixed(years % 1 === 0 ? 0 : 1)}y`;
+    return `${formatDecimal(years, 1)}y`;
   }
 };
 
@@ -51,13 +55,13 @@ export const formatTimeForStats = (
 ) => {
   if (milliseconds < millisecondsInMinute) {
     const seconds = milliseconds / millisecondsInSecond;
-    return `${seconds.toFixed(seconds % 1 === 0 ? 0 : 2)} ${short ? "s" : "seconds"}`;
+    return `${formatDecimal(seconds)} ${short ? "s" : "seconds"}`;
   } else if (milliseconds < millisecondsInHour) {
     const minutes = milliseconds / millisecondsInMinute;
-    return `${minutes.toFixed(minutes % 1 === 0 ? 0 : 2)} ${short ? "m" : "minutes"}`;
+    return `${formatDecimal(minutes)} ${short ? "m" : "minutes"}`;
   } else {
     const hours = milliseconds / millisecondsInHour;
-    return `${hours.toFixed(hours % 1 === 0 ? 0 : 2)} ${short ? "h" : "hours"}`;
+    return `${formatDecimal(hours)} ${short ? "h" : "hours"}`;
   }
 };
 

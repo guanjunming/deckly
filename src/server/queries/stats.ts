@@ -1,8 +1,8 @@
 import { db } from "@/db/db";
 import { getAllCards } from "./cards";
-import { deckProgressTable } from "@/db/schema";
+import { deckProgressTable, reviewLogTable } from "@/db/schema";
 import { getTodayDate } from "@/lib/utils";
-import { and, eq, sum } from "drizzle-orm";
+import { and, count, eq, sum } from "drizzle-orm";
 
 export const getAllProgressToday = async (userId: string) => {
   const today = getTodayDate();
@@ -32,14 +32,29 @@ export const getAllProgressToday = async (userId: string) => {
   };
 };
 
+const getRatingStats = async (userId: string) => {
+  const result = await db
+    .select({
+      state: reviewLogTable.state,
+      rating: reviewLogTable.rating,
+      count: count(),
+    })
+    .from(reviewLogTable)
+    .where(eq(reviewLogTable.userId, userId))
+    .groupBy(reviewLogTable.state, reviewLogTable.rating);
+
+  return result;
+};
+
 export const getStatsData = async (userId: string) => {
   const todayProgress = await getAllProgressToday(userId);
-
   const cards = await getAllCards(userId);
+  const ratingData = await getRatingStats(userId);
 
   const cardCount: Record<string, number> = {};
   const cardEase: Record<number, number> = {};
   const cardInterval: Record<number, number> = {};
+  const ratingCount: Record<string, Record<number, number>> = {};
 
   let totalEase = 0;
   let easeCount = 0;
@@ -67,6 +82,15 @@ export const getStatsData = async (userId: string) => {
   const averageEase = easeCount > 0 ? totalEase / easeCount : 0;
   const averageInterval = intervalCount > 0 ? totalInterval / intervalCount : 0;
 
+  for (let id = 0; id < ratingData.length; id++) {
+    const row = ratingData[id];
+
+    if (!ratingCount[row.state]) {
+      ratingCount[row.state] = {};
+    }
+    ratingCount[row.state][row.rating] = row.count;
+  }
+
   return {
     todayProgress,
     cardCountData: {
@@ -81,5 +105,6 @@ export const getStatsData = async (userId: string) => {
       cardInterval,
       averageInterval: Math.floor(averageInterval),
     },
+    ratingCountData: ratingCount,
   };
 };

@@ -1,6 +1,7 @@
 import { CardCountsChart } from "@/components/charts/CardCountsChart";
 import { CardEaseChart } from "@/components/charts/CardEaseChart";
 import { CardIntervalChart } from "@/components/charts/CardIntervalChart";
+import { RatingCountsChart } from "@/components/charts/RatingCountsChart";
 import TodayProgressCard from "@/components/charts/TodayProgressCard";
 import { getStatsData } from "@/server/queries/stats";
 import { getUserSubscriptionTier } from "@/server/queries/subscription";
@@ -30,6 +31,10 @@ const StatsPage = async () => {
         />
         <CardIntervalChart
           data={statsData.cardIntervalData}
+          subscriptionTier={currentTier}
+        />
+        <RatingCountsChart
+          data={statsData.ratingCountData}
           subscriptionTier={currentTier}
         />
       </div>
