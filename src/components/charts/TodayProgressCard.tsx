@@ -23,11 +23,11 @@ const TodayProgressCard = ({
       <ChartHeader>Today</ChartHeader>
       <CardContent className="grid flex-grow place-content-center text-center">
         {totalCards > 0 ? (
-          <>
+          <div className="flex flex-col gap-0.5">
             <div>{`Studied ${totalCards} ${appendS("card", totalCards)} in ${formatTimeForStats(totalTime)} today`}</div>
             <div>{`(${formatTimeForStats(averageTime)}/card)`}</div>
             <div>{`New: ${totalNew}, Learn: ${totalLearning}, Review: ${totalReview}`}</div>
-          </>
+          </div>
         ) : (
           <div>No cards have been studied today.</div>
         )}

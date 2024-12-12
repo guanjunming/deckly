@@ -2,6 +2,7 @@ import { CardCountsChart } from "@/components/charts/CardCountsChart";
 import { CardEaseChart } from "@/components/charts/CardEaseChart";
 import { CardIntervalChart } from "@/components/charts/CardIntervalChart";
 import { RatingCountsChart } from "@/components/charts/RatingCountsChart";
+import { ReviewsChart } from "@/components/charts/ReviewsChart";
 import TodayProgressCard from "@/components/charts/TodayProgressCard";
 import { getStatsData } from "@/server/queries/stats";
 import { getUserSubscriptionTier } from "@/server/queries/subscription";
@@ -16,7 +17,6 @@ const StatsPage = async () => {
 
   const statsData = await getStatsData(userId);
 
-  console.log(statsData);
   return (
     <div className="p-6">
       <div className="grid w-full gap-x-4 gap-y-4 xl:grid-cols-2 2xl:grid-cols-3">
@@ -35,6 +35,10 @@ const StatsPage = async () => {
         />
         <RatingCountsChart
           data={statsData.ratingCountData}
+          subscriptionTier={currentTier}
+        />
+        <ReviewsChart
+          data={statsData.reviewCountData}
           subscriptionTier={currentTier}
         />
       </div>
