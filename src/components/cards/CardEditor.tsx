@@ -38,7 +38,10 @@ const CardEditor = ({
   }, [selectedCard]);
 
   const handleAddClicked = async () => {
-    if (!deckId) return;
+    if (!deckId) {
+      toast.error("No deck is currently selected.");
+      return;
+    }
 
     if (!canAddCard) {
       toast.error(
@@ -70,7 +73,10 @@ const CardEditor = ({
   };
 
   const handleUpdateClicked = async () => {
-    if (!selectedCard) return;
+    if (!selectedCard) {
+      toast.error("No card is currently selected.");
+      return;
+    }
 
     if (frontField === "") {
       toast.error("The front field is empty.");

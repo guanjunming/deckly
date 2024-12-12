@@ -74,7 +74,7 @@ export const ReviewsChart = ({
       </ChartHeader>
       <ChartContentWrapper
         subscriptionTier={subscriptionTier}
-        hasData={chartData.length > 0}
+        hasData={daysStudied > 0}
       >
         <CardContent className="py-3 pl-0">
           <ChartContainer config={chartConfig}>
