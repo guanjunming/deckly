@@ -1,3 +1,5 @@
+![home](https://github.com/user-attachments/assets/3793324e-6c0e-4c8a-b2dc-76c04e105b5c)
+
 # Deckly
 
 Deckly is a flashcard application designed to make remembering things easier and more efficient. It leverages the spaced repetition technique to help users optimize their learning process by scheduling reviews at strategic intervals. Whether you're learning a new language, preparing for medical exams, or mastering any knowledge-intensive subject, Deckly is your go-to solution for boosting memory retention, reducing study time, and enhancing productivity.
@@ -19,19 +21,19 @@ The application is built using Next.js, Neon Postgres database with Drizzle, Sha
 ## Screenshots
 
 ### Decks Page
-
+![decks](https://github.com/user-attachments/assets/b4b392bf-3d01-4cd7-af78-c097e5d247cf)
 Displays an overview of all the decks created by the user. Includes options for creating new decks and managing existing ones.
 
 ### Cards Page
-
+![card_brower](https://github.com/user-attachments/assets/593e4614-f539-4659-b6a7-62e5dcd2dacf)
 Users can view all cards within a selected deck. This page allows the addition, editing, or deletion of cards.
 
 ### Statistics Page
-
+![statistics](https://github.com/user-attachments/assets/cb23b991-4259-46e2-8a04-6e53ec54019f)
 Visualizes user activity and card statistics, providing insights into learning progress and overall performance.
 
 ### Premium Page
-
+![premium](https://github.com/user-attachments/assets/7efaf522-acc6-471c-8118-1faf2b4e8da9)
 Showcases the benefits of premium subscriptions, such as unlocking higher deck limits and gaining access to exclusive features.
 
 ## Features
@@ -56,6 +58,7 @@ Showcases the benefits of premium subscriptions, such as unlocking higher deck l
 - **Stripe**: Payment processing for premium subscriptions.
 
 ## Database Model
+![database](https://github.com/user-attachments/assets/7973cf70-738a-4bf4-aa2f-603f5302f007)
 
 ## Getting Started
 
