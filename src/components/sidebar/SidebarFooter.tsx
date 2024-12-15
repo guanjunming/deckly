@@ -11,9 +11,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Ellipsis, LogOut, Settings } from "lucide-react";
+import { Ellipsis, LogOut } from "lucide-react";
 import { logout } from "@/server/actions/auth";
-import Link from "next/link";
 
 interface DropdownMenuProps {
   session: Session | null;
